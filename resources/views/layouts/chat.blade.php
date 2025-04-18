@@ -63,6 +63,57 @@
             animation-delay: 0.4s;
         }
 
+
+        .code-container {
+            background: #f5f5f5;
+            border-radius: 6px;
+            margin: 20px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #e0e0e0;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .language-badge {
+            background: #3490dc;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .copy-btn {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .copy-btn:hover {
+            background: #f0f0f0;
+        }
+
+        pre {
+            margin: 0;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
+        }
+
         @keyframes typing {
 
             0%,

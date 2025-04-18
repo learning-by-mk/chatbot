@@ -1,3 +1,46 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .prose {
+        /* @apply whitespace-pre-wrap; */
+    }
+
+    .prose p {
+        @apply mb-4;
+    }
+
+    .prose ul {
+        @apply list-disc pl-6 mb-4;
+    }
+
+    .prose li {
+        @apply mb-2;
+    }
+
+    .prose .math {
+        @apply my-4;
+    }
+
+    .prose .math.display {
+        display: block;
+        text-align: center;
+    }
+
+    .prose .math.inline {
+        display: inline;
+    }
+
+    .prose pre {
+        @apply bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
+    }
+
+    .prose code {
+        @apply bg-gray-100 text-gray-800 px-1 py-0.5 rounded text-sm;
+    }
+
+    .prose pre code {
+        @apply bg-transparent text-gray-100 p-0;
+    }
+}
