@@ -59,7 +59,7 @@
                                     </a>
                                     <form action="{{ route('admin.posts.destroy', $post) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?')">
-                                        @csrf
+
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">
                                             <i class="fas fa-trash"></i>

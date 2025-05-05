@@ -9,7 +9,7 @@
         </div>
 
         <form action="{{ route('admin.posts.update', $post) }}" method="POST">
-            @csrf
+
             @method('PUT')
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

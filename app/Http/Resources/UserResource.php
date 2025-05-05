@@ -16,12 +16,11 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = parent::toArray($request);
-        $shouldShowPosts = Str::contains($request->path(), $this->resource->getTable());
         return [
             ...$user,
             'roles' => $this->roles,
             'permissions' => $this->permissions,
-            'posts' => $shouldShowPosts ? PostResource::collection($this->posts) : null,
+            'posts' => $this->whenLoaded("posts", fn() => PostResource::collection($this->posts), [])
         ];
     }
 }

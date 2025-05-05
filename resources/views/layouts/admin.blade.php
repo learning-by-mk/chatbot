@@ -125,7 +125,7 @@
                 </div>
                 <span class="text-gray-600">{{ auth()->user()->name }}</span>
                 <form action="{{ route('logout') }}" method="POST">
-                    @csrf
+
                     <button type="submit" class="text-red-500 hover:text-red-700">
                         <i class="fas fa-sign-out-alt"></i> Đăng xuất
                     </button>

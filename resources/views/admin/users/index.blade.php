@@ -55,7 +55,7 @@
                                     </a>
                                     <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
-                                        @csrf
+
                                         @method('DELETE')
                                         <button type="submit" class="text-red-500 hover:text-red-700">
                                             <i class="fas fa-trash"></i>

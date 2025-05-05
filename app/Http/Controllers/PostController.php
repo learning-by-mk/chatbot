@@ -28,14 +28,6 @@ class PostController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('admin.posts.create');
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StorePostRequest $request)
@@ -60,14 +52,6 @@ class PostController extends Controller
     {
         // return view('admin.posts.show', compact('post'));
         return response()->json(new PostResource($post));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Post $post)
-    {
-        return view('admin.posts.edit', compact('post'));
     }
 
     /**

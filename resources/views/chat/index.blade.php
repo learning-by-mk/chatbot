@@ -118,7 +118,7 @@ $sending = false;
                             </svg>
                         </button>
                         <form id="chat-form" class="flex items-center space-x-2 flex-1">
-                            @csrf
+
                             <div class="flex-1 relative">
                                 <input type="text" id="message-input"
                                     class="w-full px-4 py-3 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
