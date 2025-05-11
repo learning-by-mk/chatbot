@@ -13,6 +13,16 @@ use Illuminate\View\View;
 class AuthenticatedSessionController extends Controller
 {
 
+    public function me(Request $request)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $user = $request->user()->load($with_vals);
+        return response()->json([
+            'user' => new UserResource($user),
+        ], 200);
+    }
+
     /**
      * Handle an incoming authentication request.
      */
@@ -34,7 +44,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Destroy an authenticated session.
      */
-    public function destroy(Request $request): RedirectResponse
+    public function destroy(Request $request)
     {
         Auth::guard('web')->logout();
 
@@ -42,6 +52,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return response()->json([
+            'message' => 'Logged out successfully',
+        ], 200);
     }
 }

@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
 {
@@ -16,25 +18,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $request->all();
-        if (isset($data['search'])) {
-            $users = User::where('name', 'like', '%' . $data['search'] . '%')
-                ->orWhere('email', 'like', '%' . $data['search'] . '%')
-                ->orWhere('email', 'like', '%' . $data['search'] . '%')
-                ->get();
-        } else {
-            $users = User::all();
-        }
-        return view('admin.users.index', compact('users', 'request'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $roles = Role::all();
-        return view('admin.users.create', compact('roles'));
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $users = QueryBuilder::for(User::class)
+            ->with($with_vals)
+            ->paginate(1000, ['*'], 'page', 1);
+        return UserResource::collection($users);
     }
 
     /**
@@ -42,31 +31,21 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $user = User::create($request->validated());
-        $user->assignRole($request->role);
-        $user = new UserResource($user);
-        // return response()->json($user);
-        return redirect()->route('admin.users.index')->with('success', 'User created successfully');
+        $data = $request->validated();
+        $user = User::create($data);
+        $user->syncRoles([$data['role']]);
+        return new UserResource($user);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
-        $user = new UserResource($user);
-        // return view('admin.users.show', compact('user'));
-        return response()->json($user);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        $roles = Role::all();
-        $user = new UserResource($user);
-        return view('admin.users.edit', compact('user', 'roles'));
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $user = $user->load($with_vals);
+        return new UserResource($user);
     }
 
     /**
@@ -78,10 +57,15 @@ class UserController extends Controller
         if (empty($data['password'])) {
             unset($data['password']);
             unset($data['password_confirmation']);
+        } else {
+            if ($data['password'] !== $data['password_confirmation']) {
+                throw new \Exception('Mật khẩu không khớp');
+            }
+            $data['password'] = Hash::make($data['password']);
         }
         $user->update($data);
         $user->syncRoles($data['role']);
-        return redirect()->route('admin.users.index')->with('success', 'User updated successfully');
+        return new UserResource($user);
     }
 
     /**
@@ -89,7 +73,17 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->delete();
-        return redirect()->route('admin.users.index')->with('success', 'User deleted successfully');
+        try {
+            $user->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'User deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'User not deleted'
+            ], 500);
+        }
     }
 }

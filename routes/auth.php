@@ -24,7 +24,7 @@ Route::middleware(['guest'])->prefix('api')->group(function () {
         ->name('password.store');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->prefix('api')->group(function () {
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware('throttle:6,1')
