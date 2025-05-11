@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class UserSeeder extends Seeder
 {
@@ -14,21 +15,37 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // admin
-        User::updateOrCreate([
-            'email' => 'admin@gmail.com',
-        ], [
-            'name' => 'Admin',
+        // Đảm bảo role 'admin' tồn tại
+        $adminRole = Role::firstOrCreate(['name' => 'admin']);
+
+        // Tạo 1 tài khoản admin
+        $admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@example.com',
             'password' => Hash::make('password'),
+            'email_verified_at' => now(),
+            'job' => 'System Administrator',
+            'phone' => '0123456789',
+            'bio' => 'Quản trị viên hệ thống',
+            'hobbies' => 'Coding, Reading, Gaming',
+            'status' => 'active',
         ]);
 
-        // users
-        for ($i = 0; $i < 10; $i++) {
-            User::updateOrCreate([
-                'email' => 'user' . $i . '@gmail.com',
-            ], [
+        // Gán quyền admin
+        $admin->assignRole('admin');
+
+        // Tạo 9 người dùng thường
+        for ($i = 1; $i <= 9; $i++) {
+            $user = User::create([
                 'name' => 'User ' . $i,
+                'email' => 'user' . $i . '@example.com',
                 'password' => Hash::make('password'),
+                'email_verified_at' => now(),
+                'job' => 'Nghề nghiệp ' . $i,
+                'phone' => '098765432' . $i,
+                'bio' => 'Đây là thông tin giới thiệu của người dùng ' . $i,
+                'hobbies' => 'Sở thích ' . $i,
+                'status' => 'active',
             ]);
         }
     }

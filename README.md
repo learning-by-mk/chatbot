@@ -18,7 +18,6 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 | `name`       | VARCHAR        | Họ tên                         |
 | `email`      | VARCHAR UNIQUE | Email dùng để đăng nhập        |
 | `password`   | VARCHAR        | Mật khẩu đã mã hóa             |
-| `role`       | ENUM           | `admin` hoặc `user`            |
 | `status`     | ENUM           | `active`, `inactive`, `banned` |
 | `created_at` | DATETIME       | Ngày tạo                       |
 | `updated_at` | DATETIME       | Ngày cập nhật                  |
@@ -40,47 +39,20 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 
 ---
 
-### 3. `publishers` – Nhà xuất bản
-
-| Cột           | Kiểu dữ liệu | Ghi chú          |
-| ------------- | ------------ | ---------------- |
-| `id`          | INT PK       | Khóa chính       |
-| `name`        | VARCHAR      | Tên nhà xuất bản |
-| `description` | TEXT         | Mô tả            |
-| `created_at`  | DATETIME     | Ngày tạo         |
-
-📌 _Ý nghĩa:_ Mỗi tài liệu có thể liên kết với một nhà xuất bản (không bắt buộc).
-
----
-
-### 4. `authors` – Tác giả
-
-| Cột          | Kiểu dữ liệu | Ghi chú     |
-| ------------ | ------------ | ----------- |
-| `id`         | INT PK       | Khóa chính  |
-| `name`       | VARCHAR      | Tên tác giả |
-| `bio`        | TEXT         | Tiểu sử     |
-| `created_at` | DATETIME     | Ngày tạo    |
-
-📌 _Ý nghĩa:_ Tài liệu bắt buộc phải có tác giả.
-
----
-
 ### 5. `documents` – Tài liệu/sách
 
-| Cột            | Kiểu dữ liệu    | Ghi chú                           |
-| -------------- | --------------- | --------------------------------- |
-| `id`           | UUID / INT PK   | Khóa chính                        |
-| `title`        | VARCHAR         | Tên tài liệu                      |
-| `description`  | TEXT            | Mô tả ngắn                        |
-| `category_id`  | INT FK          | Tham chiếu `categories`           |
-| `publisher_id` | INT FK NULLABLE | Tham chiếu `publishers`           |
-| `author_id`    | INT FK          | Tham chiếu `authors`              |
-| `file_path`    | VARCHAR         | Đường dẫn tệp gốc                 |
-| `pdf_path`     | VARCHAR         | Đường dẫn file PDF                |
-| `status`       | ENUM            | `pending`, `approved`, `rejected` |
-| `uploaded_by`  | UUID FK         | Người tải lên                     |
-| `created_at`   | DATETIME        | Ngày tải lên                      |
+| Cột           | Kiểu dữ liệu  | Ghi chú                           |
+| ------------- | ------------- | --------------------------------- |
+| `id`          | UUID / INT PK | Khóa chính                        |
+| `title`       | VARCHAR       | Tên tài liệu                      |
+| `description` | TEXT          | Mô tả ngắn                        |
+| `category_id` | INT FK        | Tham chiếu `categories`           |
+| `author_id`   | INT FK        | Tham chiếu `users`                |
+| `file_path`   | VARCHAR       | Đường dẫn tệp gốc                 |
+| `pdf_path`    | VARCHAR       | Đường dẫn file PDF                |
+| `status`      | ENUM          | `pending`, `approved`, `rejected` |
+| `uploaded_by` | UUID FK       | Người tải lên                     |
+| `created_at`  | DATETIME      | Ngày tải lên                      |
 
 📌 _Ý nghĩa:_ Gắn với danh mục, nhà xuất bản và tác giả.
 
@@ -146,18 +118,6 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 
 ---
 
-### 11. `sliders` – Hình ảnh trượt (trang chủ)
-
-| Cột          | Kiểu dữ liệu | Ghi chú                  |
-| ------------ | ------------ | ------------------------ |
-| `id`         | INT PK       | Khóa chính               |
-| `title`      | VARCHAR      | Tiêu đề ảnh              |
-| `image_path` | VARCHAR      | Đường dẫn ảnh            |
-| `link`       | VARCHAR NULL | Khi người dùng click ảnh |
-| `created_at` | DATETIME     | Ngày thêm                |
-
----
-
 ### 12. `ai_summaries` – Dữ liệu tóm tắt AI
 
 | Cột           | Kiểu dữ liệu | Ghi chú          |
@@ -183,12 +143,12 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 ### 14. `chatbot_questions` – Lưu lịch sử hỏi đáp AI
 
 | Cột           | Kiểu dữ liệu | Ghi chú              |
-| ------------- | ------------ | -------------------- |
+| ------------- | ------------ | -------------------- | ------- |
 | `id`          | INT PK       | Khóa chính           |
 | `user_id`     | INT FK       | Ai hỏi               |
 | `document_id` | INT FK       | Gắn với tài liệu nào |
-| `question`    | TEXT         | Câu hỏi              |
-| `answer`      | TEXT         | Câu trả lời của AI   |
+| <!--          | `question`   | TEXT                 | Câu hỏi |
+| `answer`      | TEXT         | Câu trả lời của AI   | -->     |
 | `created_at`  | DATETIME     | Thời điểm hỏi        |
 
 ---

@@ -20,11 +20,12 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+    // protected $fillable = [
+    //     'name',
+    //     'email',
+    //     'password',
+    // ];
+    protected $guarded = [];
 
     protected $guard_name = 'web';
 
@@ -53,7 +54,7 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->roles->where('name', 'admin')->isNotEmpty();
+        return $this->hasRole('admin');
     }
 
     public function posts(): HasMany
