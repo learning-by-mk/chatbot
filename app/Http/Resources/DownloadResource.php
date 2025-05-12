@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResource extends JsonResource
+class DownloadResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,14 @@ class RoleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'guard_name' => $this->guard_name,
+            'document_id' => $this->document_id,
+            'user_id' => $this->user_id,
+            'ip_address' => $this->ip_address,
+            'downloaded_at' => $this->downloaded_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'permissions' => $this->whenLoaded('permissions', fn($permissions) => $permissions, []),
+            'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),
+            'user' => $this->whenLoaded('user', fn($user) => new UserResource($user)),
         ];
     }
 }

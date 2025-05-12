@@ -4,17 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Chat extends Model
 {
-    // protected $fillable = [
-    //     'user_id',
-    //     'title',
-    //     'last_message',
-    //     'uuid',
-    //     'messages',
-    //     'chatbot_question_id',
-    // ];
+    use HasFactory;
     protected $guarded = ['chatbot_question', 'user'];
 
     protected $casts = [

@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
+use App\Http\Resources\DocumentResource;
 use App\Models\Document;
+use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class DocumentController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $documents = QueryBuilder::for(Document::class)
+            ->with($with_vals)
+            ->paginate(1000, ['*'], 'page', 1);
+        return DocumentResource::collection($documents);
     }
 
     /**
@@ -29,15 +37,20 @@ class DocumentController extends Controller
      */
     public function store(StoreDocumentRequest $request)
     {
-        //
+        $data = $request->validated();
+        $document = Document::create($data);
+        return new DocumentResource($document);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Document $document)
+    public function show(Request $request, Document $document)
     {
-        //
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $document = $document->load($with_vals);
+        return new DocumentResource($document);
     }
 
     /**
@@ -53,7 +66,9 @@ class DocumentController extends Controller
      */
     public function update(UpdateDocumentRequest $request, Document $document)
     {
-        //
+        $data = $request->validated();
+        $document->update($data);
+        return new DocumentResource($document);
     }
 
     /**
@@ -61,6 +76,17 @@ class DocumentController extends Controller
      */
     public function destroy(Document $document)
     {
-        //
+        try {
+            $document->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'Document deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Document not deleted'
+            ], 500);
+        }
     }
 }

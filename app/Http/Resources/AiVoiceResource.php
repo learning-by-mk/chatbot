@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RoleResource extends JsonResource
+class AiVoiceResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,11 @@ class RoleResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'guard_name' => $this->guard_name,
+            'document_id' => $this->document_id,
+            'audio_path' => $this->audio_path,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'permissions' => $this->whenLoaded('permissions', fn($permissions) => $permissions, []),
+            'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),
         ];
     }
 }

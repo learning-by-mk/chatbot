@@ -4,16 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAiVoiceRequest;
 use App\Http\Requests\UpdateAiVoiceRequest;
+use App\Http\Resources\AiVoiceResource;
 use App\Models\AiVoice;
+use Illuminate\Http\Request;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class AiVoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $aiVoices = QueryBuilder::for(AiVoice::class)
+            ->with($with_vals)
+            ->paginate(1000, ['*'], 'page', 1);
+        return AiVoiceResource::collection($aiVoices);
     }
 
     /**
@@ -29,15 +37,20 @@ class AiVoiceController extends Controller
      */
     public function store(StoreAiVoiceRequest $request)
     {
-        //
+        $data = $request->validated();
+        $aiVoice = AiVoice::create($data);
+        return new AiVoiceResource($aiVoice);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(AiVoice $aiVoice)
+    public function show(Request $request, AiVoice $aiVoice)
     {
-        //
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $aiVoice = $aiVoice->load($with_vals);
+        return new AiVoiceResource($aiVoice);
     }
 
     /**
@@ -53,7 +66,9 @@ class AiVoiceController extends Controller
      */
     public function update(UpdateAiVoiceRequest $request, AiVoice $aiVoice)
     {
-        //
+        $data = $request->validated();
+        $aiVoice->update($data);
+        return new AiVoiceResource($aiVoice);
     }
 
     /**
@@ -61,6 +76,17 @@ class AiVoiceController extends Controller
      */
     public function destroy(AiVoice $aiVoice)
     {
-        //
+        try {
+            $aiVoice->delete();
+            return response()->json([
+                'status' => true,
+                'message' => 'AI Voice deleted successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'AI Voice not deleted'
+            ], 500);
+        }
     }
 }

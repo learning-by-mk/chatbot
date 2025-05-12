@@ -41,18 +41,18 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 
 ### 5. `documents` – Tài liệu/sách
 
-| Cột           | Kiểu dữ liệu  | Ghi chú                           |
-| ------------- | ------------- | --------------------------------- |
-| `id`          | UUID / INT PK | Khóa chính                        |
-| `title`       | VARCHAR       | Tên tài liệu                      |
-| `description` | TEXT          | Mô tả ngắn                        |
-| `category_id` | INT FK        | Tham chiếu `categories`           |
-| `author_id`   | INT FK        | Tham chiếu `users`                |
-| `file_path`   | VARCHAR       | Đường dẫn tệp gốc                 |
-| `pdf_path`    | VARCHAR       | Đường dẫn file PDF                |
-| `status`      | ENUM          | `pending`, `approved`, `rejected` |
-| `uploaded_by` | UUID FK       | Người tải lên                     |
-| `created_at`  | DATETIME      | Ngày tải lên                      |
+| Cột              | Kiểu dữ liệu  | Ghi chú                           |
+| ---------------- | ------------- | --------------------------------- |
+| `id`             | UUID / INT PK | Khóa chính                        |
+| `title`          | VARCHAR       | Tên tài liệu                      |
+| `description`    | TEXT          | Mô tả ngắn                        |
+| `category_id`    | INT FK        | Tham chiếu `categories`           |
+| `author_id`      | INT FK        | Tham chiếu `users`                |
+| `file_path`      | VARCHAR       | Đường dẫn tệp gốc                 |
+| `pdf_path`       | VARCHAR       | Đường dẫn file PDF                |
+| `status`         | ENUM          | `pending`, `approved`, `rejected` |
+| `uploaded_by_id` | UUID FK       | Người tải lên                     |
+| `created_at`     | DATETIME      | Ngày tải lên                      |
 
 📌 _Ý nghĩa:_ Gắn với danh mục, nhà xuất bản và tác giả.
 
@@ -143,12 +143,10 @@ Một thư viện số giúp người dùng **tìm kiếm, đọc, đánh giá, 
 ### 14. `chatbot_questions` – Lưu lịch sử hỏi đáp AI
 
 | Cột           | Kiểu dữ liệu | Ghi chú              |
-| ------------- | ------------ | -------------------- | ------- |
+| ------------- | ------------ | -------------------- |
 | `id`          | INT PK       | Khóa chính           |
 | `user_id`     | INT FK       | Ai hỏi               |
 | `document_id` | INT FK       | Gắn với tài liệu nào |
-| <!--          | `question`   | TEXT                 | Câu hỏi |
-| `answer`      | TEXT         | Câu trả lời của AI   | -->     |
 | `created_at`  | DATETIME     | Thời điểm hỏi        |
 
 ---
