@@ -32,12 +32,12 @@ class CommentSeeder extends Seeder
 
         $scores = [3, 4, 5, 4, 5, 3, 5, 4, 5, 4];
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 40; $i++) {
             Comment::create([
                 'document_id' => $documents->random()->id,
                 'user_id' => $users->random()->id,
-                'comment' => $comments[$i],
-                'score' => $scores[$i],
+                'comment' => $comments[array_rand($comments)],
+                'score' => $scores[array_rand($scores)],
             ]);
         }
     }

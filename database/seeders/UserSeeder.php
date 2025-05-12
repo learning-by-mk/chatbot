@@ -47,6 +47,7 @@ class UserSeeder extends Seeder
                 'hobbies' => 'Sở thích ' . $i,
                 'status' => 'active',
             ]);
+            $user->assignRole('user');
         }
     }
 }

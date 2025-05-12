@@ -20,7 +20,17 @@ class PermissionSeeder extends Seeder
         collect([ // tables
             'users',
             'roles',
-            'settings',
+            'ai_summaries',
+            'ai_voices',
+            'categories',
+            'comments',
+            'documents',
+            'documents_categories',
+            'chats',
+            'chatbot_questions',
+            'downloads',
+            'favorites',
+            'setting_configs',
         ])
             ->crossJoin([ // levels
                 'list',

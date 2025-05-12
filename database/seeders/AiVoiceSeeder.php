@@ -13,13 +13,13 @@ class AiVoiceSeeder extends Seeder
      */
     public function run(): void
     {
-        $documents = Document::all();
+        // $documents = Document::all();
 
-        for ($i = 0; $i < 10; $i++) {
-            AiVoice::create([
-                'document_id' => $documents->random()->id,
-                'audio_path' => 'voices/document_audio_' . ($i + 1) . '.mp3',
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     AiVoice::create([
+        //         'document_id' => $documents->random()->id,
+        //         'audio_path' => 'voices/document_audio_' . ($i + 1) . '.mp3',
+        //     ]);
+        // }
     }
 }

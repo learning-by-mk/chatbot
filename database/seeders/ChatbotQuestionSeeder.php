@@ -14,14 +14,14 @@ class ChatbotQuestionSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
-        $documents = Document::all();
+        // $users = User::all();
+        // $documents = Document::all();
 
-        for ($i = 0; $i < 10; $i++) {
-            ChatbotQuestion::create([
-                'user_id' => $users->random()->id,
-                'document_id' => $documents->random()->id,
-            ]);
-        }
+        // for ($i = 0; $i < 10; $i++) {
+        //     ChatbotQuestion::create([
+        //         'user_id' => $users->random()->id,
+        //         'document_id' => $documents->random()->id,
+        //     ]);
+        // }
     }
 }

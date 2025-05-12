@@ -15,7 +15,6 @@ class DocumentSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        $categories = Category::all();
 
         $documents = [
             [
@@ -93,13 +92,12 @@ class DocumentSeeder extends Seeder
         foreach ($documents as $index => $document) {
             Document::create([
                 'author_id' => $users->random()->id,
-                'category_id' => $categories->random()->id,
                 'title' => $document['title'],
                 'description' => $document['description'],
                 'file_path' => $document['file_path'],
                 'pdf_path' => $document['pdf_path'],
                 'status' => $document['status'],
-                'uploaded_by' => $users->random()->id,
+                'uploaded_by_id' => $users->random()->id,
             ]);
         }
     }
