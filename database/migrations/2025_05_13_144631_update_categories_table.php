@@ -15,6 +15,12 @@ return new class extends Migration
             if (!Schema::hasColumn('categories', 'icon')) {
                 $table->string('icon')->nullable();
             }
+            if (!Schema::hasColumn('categories', 'slug')) {
+                $table->string('slug')->nullable();
+            }
+            if (!Schema::hasColumn('categories', 'href')) {
+                $table->string('href')->nullable();
+            }
         });
     }
 
@@ -24,7 +30,15 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('categories', function (Blueprint $table) {
-            $table->dropColumn('icon');
+            if (Schema::hasColumn('categories', 'icon')) {
+                $table->dropColumn('icon');
+            }
+            if (Schema::hasColumn('categories', 'slug')) {
+                $table->dropColumn('slug');
+            }
+            if (Schema::hasColumn('categories', 'href')) {
+                $table->dropColumn('href');
+            }
         });
     }
 };

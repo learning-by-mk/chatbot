@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('setting_group_id')->constrained();
-            $table->string('key');
-            $table->text('value');
-            $table->text('description')->nullable();
-            $table->timestamps();
+        Schema::table('documents', function (Blueprint $table) {
+            if (!Schema::hasColumn('documents', 'content')) {
+                $table->text('content')->nullable();
+            }
         });
     }
 
@@ -26,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('setings');
+        Schema::table('documents', function (Blueprint $table) {
+            //
+        });
     }
 };

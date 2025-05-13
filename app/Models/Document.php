@@ -28,13 +28,6 @@ class Document extends Model
         'file',
     ];
 
-    public function downloadCount(): Attribute
-    {
-        return new Attribute(
-            get: fn() => $this->downloads()->count(),
-        );
-    }
-
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
@@ -85,8 +78,18 @@ class Document extends Model
         return $this->hasMany(Download::class);
     }
 
+    public function views(): HasMany
+    {
+        return $this->hasMany(View::class);
+    }
+
     public function file(): BelongsTo
     {
         return $this->belongsTo(File::class);
+    }
+
+    public function image(): BelongsTo
+    {
+        return $this->belongsTo(File::class, 'image_id');
     }
 }

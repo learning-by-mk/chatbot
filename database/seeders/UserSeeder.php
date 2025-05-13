@@ -19,7 +19,9 @@ class UserSeeder extends Seeder
         $adminRole = Role::firstOrCreate(['name' => 'admin']);
 
         // Tạo 1 tài khoản admin
-        $admin = User::create([
+        $admin = User::updateOrCreate([
+            'email' => 'admin@example.com',
+        ], [
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => Hash::make('password'),
@@ -36,7 +38,9 @@ class UserSeeder extends Seeder
 
         // Tạo 9 người dùng thường
         for ($i = 1; $i <= 9; $i++) {
-            $user = User::create([
+            $user = User::updateOrCreate([
+                'email' => 'user' . $i . '@example.com',
+            ], [
                 'name' => 'User ' . $i,
                 'email' => 'user' . $i . '@example.com',
                 'password' => Hash::make('password'),

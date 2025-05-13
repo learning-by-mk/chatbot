@@ -21,6 +21,9 @@ class CategoryResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'icon' => $this->icon,
+            'href' => $this->href,
+            'slug' => $this->slug,
             'documents' => $this->whenLoaded('documents', fn($documents) => DocumentResource::collection($documents), []),
         ];
     }

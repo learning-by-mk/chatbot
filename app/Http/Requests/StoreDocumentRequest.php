@@ -23,6 +23,7 @@ class StoreDocumentRequest extends FormRequest
     {
         return [
             'file_id' => 'required|exists:files,id',
+            'image_id' => 'required|exists:files,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'category_ids' => [
@@ -33,6 +34,7 @@ class StoreDocumentRequest extends FormRequest
             'author_id' => 'required|exists:users,id',
             'uploaded_by_id' => 'nullable|exists:users,id',
             'status' => 'required|in:pending,approved,rejected,draft',
+            'content' => 'nullable|string',
         ];
     }
 }

@@ -28,7 +28,7 @@ class FavoriteSeeder extends Seeder
             if (!in_array($pair, $userDocumentPairs)) {
                 $userDocumentPairs[] = $pair;
 
-                Favorite::create([
+                Favorite::updateOrCreate([
                     'user_id' => $userId,
                     'document_id' => $documentId,
                 ]);

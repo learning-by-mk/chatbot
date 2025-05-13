@@ -21,7 +21,11 @@ class DocumentResource extends JsonResource
             'author_id' => $this->author_id,
             'uploaded_by_id' => $this->uploaded_by_id,
             'publish_date' => $this->publish_date,
-            'downloadCount' => $this->downloadCount,
+            'download_count' => $this->downloads()->count(),
+            'review_count' => $this->comments()->count(),
+            'view_count' => $this->views()->count(),
+            'rating' => $this->ratings()->count() > 0 ? $this->ratings()->sum('rating') / $this->ratings()->count() : 0,
+            'favorite_count' => $this->favorites()->count(),
             'description' => $this->description,
             'status' => $this->status,
             'created_at' => $this->created_at,
@@ -38,6 +42,8 @@ class DocumentResource extends JsonResource
             'uploaded_by' => $this->whenLoaded('uploadedBy', fn($uploadedBy) => new UserResource($uploadedBy)),
             'file' => $this->whenLoaded('file', fn($file) => [new FileResource($file)]),
             'file_id' => $this->file_id,
+            'image' => $this->whenLoaded('image', fn($image) => [new FileResource($image)]),
+            'image_id' => $this->image_id,
         ];
     }
 }

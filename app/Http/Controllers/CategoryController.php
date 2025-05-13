@@ -30,6 +30,7 @@ class CategoryController extends Controller
     public function store(StoreCategoryRequest $request)
     {
         $data = $request->validated();
+        $data['href'] = "/categories/" . $data['slug'];
         $category = Category::create($data);
         return new CategoryResource($category);
     }
@@ -51,6 +52,7 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, Category $category)
     {
         $data = $request->validated();
+        $data['href'] = "/categories/" . $data['slug'];
         $category->update($data);
         return new CategoryResource($category);
     }

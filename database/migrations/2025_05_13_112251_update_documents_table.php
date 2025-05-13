@@ -16,13 +16,16 @@ return new class extends Migration
                 $table->enum('status', ['pending', 'approved', 'rejected', 'draft'])->default('pending')->change();
             }
             if (!Schema::hasColumn($table->getTable(), 'file_id')) {
-                $table->foreignId('file_id')->constrained('files');
+                $table->foreignId('file_id')->nullable()->constrained('files');
             }
             if (Schema::hasColumn($table->getTable(), 'file_path')) {
                 $table->dropColumn('file_path');
             }
             if (!Schema::hasColumn($table->getTable(), 'publish_date')) {
                 $table->dateTime('publish_date')->nullable();
+            }
+            if (Schema::hasColumn($table->getTable(), 'pdf_path')) {
+                $table->dropColumn('pdf_path');
             }
         });
     }
@@ -33,13 +36,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('documents', function (Blueprint $table) {
-            if (Schema::hasColumn($table->getTable(), 'status')) {
-                $table->enum('status', ['pending', 'approved', 'rejected', 'draft'])->default('pending')->change();
-            }
-            // if (Schema::hasColumn($table->getTable(), 'file_id')) {
-            //     $table->dropForeign(['file_id']);
-            //     $table->dropColumn('file_id');
+            // if (Schema::hasColumn($table->getTable(), 'status')) {
+            //     $table->enum('status', ['pending', 'approved', 'rejected', 'draft'])->default('pending')->change();
             // }
+            if (Schema::hasColumn($table->getTable(), 'file_id')) {
+                $table->dropForeign(['file_id']);
+                $table->dropColumn('file_id');
+            }
         });
     }
 };

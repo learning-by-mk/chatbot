@@ -14,59 +14,78 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             [
-                'name' => 'Công nghệ thông tin',
-                'description' => 'Tài liệu về CNTT, lập trình, phát triển phần mềm',
+                'name' => 'Công nghệ',
+                'description' => 'Khám phá các tài liệu về công nghệ mới nhất',
                 'status' => 'active',
+                'icon' => 'Code',
+                'slug' => 'technology',
+                'href' => '/categories/technology',
             ],
             [
                 'name' => 'Kinh tế',
                 'description' => 'Tài liệu về kinh tế, tài chính, quản trị kinh doanh',
                 'status' => 'active',
-            ],
-            [
-                'name' => 'Y học',
-                'description' => 'Tài liệu y khoa, dược phẩm, chăm sóc sức khỏe',
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Giáo dục',
-                'description' => 'Tài liệu giáo dục, giảng dạy, học tập',
-                'status' => 'active',
-            ],
-            [
-                'name' => 'Luật',
-                'description' => 'Tài liệu về luật pháp, quy định, chính sách',
-                'status' => 'active',
+                'icon' => 'LineChart',
+                'slug' => 'economics',
+                'href' => '/categories/economics',
             ],
             [
                 'name' => 'Khoa học',
-                'description' => 'Tài liệu khoa học cơ bản và ứng dụng',
+                'description' => 'Tài liệu về khoa học, kỹ thuật, y tế, khoa học tự nhiên',
                 'status' => 'active',
+                'icon' => 'Brain',
+                'slug' => 'science',
+                'href' => '/categories/science',
             ],
             [
-                'name' => 'Kỹ thuật',
-                'description' => 'Tài liệu kỹ thuật, công nghệ, máy móc',
+                'name' => 'Giáo dục',
+                'description' => 'Tài liệu về giáo dục, giáo trình, bài giảng, tài liệu giáo dục',
                 'status' => 'active',
+                'icon' => 'GraduationCap',
+                'slug' => 'education',
+                'href' => '/categories/education',
             ],
             [
-                'name' => 'Nghệ thuật',
-                'description' => 'Tài liệu về nghệ thuật, thiết kế, sáng tạo',
+                'name' => 'Văn học',
+                'description' => 'Tài liệu về văn học, sách, truyện, tài liệu văn học',
                 'status' => 'active',
+                'icon' => 'Book',
+                'slug' => 'literature',
+                'href' => '/categories/literature',
             ],
             [
-                'name' => 'Ngoại ngữ',
-                'description' => 'Tài liệu học ngoại ngữ, ngôn ngữ học',
+                'name' => 'Luận văn',
+                'description' => 'Tài liệu về luận văn, đề tài nghiên cứu, luận án',
                 'status' => 'active',
+                'icon' => 'FileText',
+                'slug' => 'thesis',
+                'href' => '/categories/thesis',
             ],
             [
-                'name' => 'Khác',
-                'description' => 'Các tài liệu không thuộc các danh mục trên',
+                'name' => 'Doanh nghiệp',
+                'description' => 'Tài liệu về doanh nghiệp, khởi nghiệp, quản trị doanh nghiệp',
                 'status' => 'active',
+                'icon' => 'Building',
+                'slug' => 'business',
+                'href' => '/categories/business',
+            ],
+            [
+                'name' => 'Sáng tạo',
+                'description' => 'Tài liệu về sáng tạo, đổi mới, tư duy sáng tạo',
+                'status' => 'active',
+                'icon' => 'Lightbulb',
+                'slug' => 'creativity',
+                'href' => '/categories/creativity',
             ],
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            Category::updateOrCreate(
+                [
+                    'slug' => $category['slug'],
+                ],
+                $category
+            );
         }
     }
 }

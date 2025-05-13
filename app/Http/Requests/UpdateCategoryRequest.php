@@ -25,6 +25,8 @@ class UpdateCategoryRequest extends FormRequest
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'status' => 'nullable|in:active,inactive',
+            'icon' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255',
         ];
     }
 }
