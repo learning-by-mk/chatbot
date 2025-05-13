@@ -16,6 +16,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
+use App\Http\Controllers\FileController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
     // Route::get('/{uuid?}', [ChatController::class, 'chat'])->name('chat.chat');
@@ -40,6 +41,7 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::apiResource('/ai-voices', AiVoiceController::class)->names('admin.ai-voices');
     Route::apiResource('/documents', DocumentController::class)->names('admin.documents');
     Route::apiResource('/categories', CategoryController::class)->names('admin.categories');
+    Route::apiResource('/files', FileController::class)->names('admin.files');
 });
 
 require __DIR__ . '/auth.php';

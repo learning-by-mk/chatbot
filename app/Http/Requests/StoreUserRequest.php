@@ -27,7 +27,7 @@ class StoreUserRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'role' => 'required|exists:roles,name',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'image_file_id' => 'nullable|exists:files,id',
             'bio' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
             'hobbies' => 'nullable|string|max:500',

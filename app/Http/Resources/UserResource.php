@@ -19,6 +19,7 @@ class UserResource extends JsonResource
         return [
             ...$user,
             'isAdmin' => $this->isAdmin(),
+            'avatar' => [$this->whenLoaded('avatar', fn() => new FileResource($this->avatar))],
             'roles' => $this->roles,
             'permissions' => $this->permissions,
             'posts' => $this->whenLoaded("posts", fn() => PostResource::collection($this->posts), [])

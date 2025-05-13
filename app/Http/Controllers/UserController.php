@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
+use App\Models\File;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -31,10 +33,13 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $file = $request->file('avatar');
-        $path = $file->store('avatars', ['disk' => 'public']);
         $data = $request->validated();
-        $data['avatar'] = $path;
+
+        if (isset($data['avatar_file_id'])) {
+            $file = File::find($data['avatar_file_id']);
+            $file->user_id = Auth::user()->id;
+            $file->save();
+        }
         $user = User::create($data);
         $user->syncRoles([$data['role']]);
         return new UserResource($user);
@@ -73,7 +78,11 @@ class UserController extends Controller
         } else {
             unset($data['avatar']);
         }
-
+        if (isset($data['image_file_id'])) {
+            $file = File::find($data['image_file_id']);
+            $file->user_id = $user->id;
+            $file->save();
+        }
         $user->syncRoles($data['role']);
         unset($data['role']);
         $user->update($data);
