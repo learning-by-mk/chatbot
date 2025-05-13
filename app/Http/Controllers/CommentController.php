@@ -25,14 +25,6 @@ class CommentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreCommentRequest $request)
@@ -51,14 +43,6 @@ class CommentController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $comment = $comment->load($with_vals);
         return new CommentResource($comment);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Comment $comment)
-    {
-        //
     }
 
     /**
@@ -89,4 +73,6 @@ class CommentController extends Controller
             ], 500);
         }
     }
+
+    // TODO: is_like, like, unlike
 }

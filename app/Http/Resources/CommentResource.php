@@ -23,6 +23,8 @@ class CommentResource extends JsonResource
             'updated_at' => $this->updated_at,
             'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),
             'user' => $this->whenLoaded('user', fn($user) => new UserResource($user)),
+            'parent' => $this->whenLoaded('parent', fn($parent) => new CommentResource($parent)),
+            'children' => $this->whenLoaded('children', fn($children) => CommentResource::collection($children), []),
         ];
     }
 }
