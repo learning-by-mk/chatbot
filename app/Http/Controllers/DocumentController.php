@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DocumentController extends Controller
@@ -30,6 +31,9 @@ class DocumentController extends Controller
     public function store(StoreDocumentRequest $request)
     {
         $data = $request->validated();
+        if (!isset($data['uploaded_by_id'])) {
+            $data['uploaded_by_id'] = Auth::id();
+        }
         $document = Document::create($data);
         $document->categories()->sync($data['category_ids']);
         return new DocumentResource($document);

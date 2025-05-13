@@ -31,7 +31,7 @@ class StoreDocumentRequest extends FormRequest
                 'exists:categories,id',
             ],
             'author_id' => 'required|exists:users,id',
-            'uploaded_by_id' => 'required|exists:users,id',
+            'uploaded_by_id' => 'nullable|exists:users,id',
             'status' => 'required|in:pending,approved,rejected,draft',
         ];
     }
