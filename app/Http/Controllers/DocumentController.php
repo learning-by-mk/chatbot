@@ -25,19 +25,14 @@ class DocumentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreDocumentRequest $request)
     {
+        $file = $request->file('file');
+        $path = $file->store('documents', ['disk' => 'public']);
         $data = $request->validated();
+        $data['file'] = $path;
         $document = Document::create($data);
         return new DocumentResource($document);
     }
@@ -51,14 +46,6 @@ class DocumentController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $document = $document->load($with_vals);
         return new DocumentResource($document);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Document $document)
-    {
-        //
     }
 
     /**

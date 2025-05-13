@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+class SettingGroup extends Model
+{
+    protected $fillable = [
+        'name',
+        'description',
+    ];
+
+    public function settings(): HasMany
+    {
+        return $this->hasMany(Setting::class);
+    }
+}

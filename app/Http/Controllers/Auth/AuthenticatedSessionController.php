@@ -18,8 +18,9 @@ class AuthenticatedSessionController extends Controller
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $user = $request->user()->load($with_vals);
+        $userResource = new UserResource($user);
         return response()->json([
-            'user' => new UserResource($user),
+            ...$userResource->toArray($request)
         ], 200);
     }
 
@@ -38,6 +39,7 @@ class AuthenticatedSessionController extends Controller
         return response([
             'user' => new UserResource($user),
             'token' => $token->plainTextToken,
+            'isAdmin' => $user->hasRole('admin'),
         ]);
     }
 

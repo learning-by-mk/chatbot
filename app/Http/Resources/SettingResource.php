@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SystemConfigResource extends JsonResource
+class SettingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,9 +18,9 @@ class SystemConfigResource extends JsonResource
             'id' => $this->id,
             'key' => $this->key,
             'value' => $this->value,
-            'group' => $this->group,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'description' => $this->description,
+            'setting_group_id' => $this->setting_group_id,
+            'group' => $this->whenLoaded('group', fn($group) => new SettingGroupResource($group)),
         ];
     }
 }

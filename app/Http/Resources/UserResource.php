@@ -18,6 +18,7 @@ class UserResource extends JsonResource
         $user = parent::toArray($request);
         return [
             ...$user,
+            'isAdmin' => $this->isAdmin(),
             'roles' => $this->roles,
             'permissions' => $this->permissions,
             'posts' => $this->whenLoaded("posts", fn() => PostResource::collection($this->posts), [])

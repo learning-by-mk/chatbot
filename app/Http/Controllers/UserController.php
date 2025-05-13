@@ -31,7 +31,10 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
+        $file = $request->file('avatar');
+        $path = $file->store('avatars', ['disk' => 'public']);
         $data = $request->validated();
+        $data['avatar'] = $path;
         $user = User::create($data);
         $user->syncRoles([$data['role']]);
         return new UserResource($user);
@@ -63,8 +66,17 @@ class UserController extends Controller
             }
             $data['password'] = Hash::make($data['password']);
         }
-        $user->update($data);
+        if ($request->hasFile('avatar') && $request->file('avatar') !== null) {
+            $file = $request->file('avatar');
+            $path = $file->store('avatars', ['disk' => 'public']);
+            $data['avatar'] = $path;
+        } else {
+            unset($data['avatar']);
+        }
+
         $user->syncRoles($data['role']);
+        unset($data['role']);
+        $user->update($data);
         return new UserResource($user);
     }
 

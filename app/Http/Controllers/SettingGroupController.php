@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
+use App\Http\Requests\SettingGroupRequest;
+use App\Http\Resources\SettingGroupResource;
+use App\Models\SettingGroup;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class CategoryController extends Controller
+class SettingGroupController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,59 +17,59 @@ class CategoryController extends Controller
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
-        $categories = QueryBuilder::for(Category::class)
+        $settingGroups = QueryBuilder::for(SettingGroup::class)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
-        return CategoryResource::collection($categories);
+        return SettingGroupResource::collection($settingGroups);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(SettingGroupRequest $request)
     {
         $data = $request->validated();
-        $category = Category::create($data);
-        return new CategoryResource($category);
+        $settingGroup = SettingGroup::create($data);
+        return new SettingGroupResource($settingGroup);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Category $category)
+    public function show(Request $request, SettingGroup $settingGroup)
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
-        $category = $category->load($with_vals);
-        return new CategoryResource($category);
+        $settingGroup = $settingGroup->load($with_vals);
+        return new SettingGroupResource($settingGroup);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(SettingGroupRequest $request, SettingGroup $settingGroup)
     {
         $data = $request->validated();
-        $category->update($data);
-        return new CategoryResource($category);
+        $settingGroup->update($data);
+        return new SettingGroupResource($settingGroup);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(SettingGroup $settingGroup)
     {
         try {
-            $category->delete();
+            $settingGroup->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'Category deleted successfully'
+                'message' => 'SettingGroup deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Category not deleted'
-            ], 500);
+                'message' => 'SettingGroup deleted failed with error: ' . $e->getMessage()
+            ]);
         }
     }
 }

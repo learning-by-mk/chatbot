@@ -26,6 +26,7 @@ class DocumentResource extends JsonResource
             'category_id' => $this->category_id,
             'publish_date' => $this->publish_date,
             'download_count' => $this->download_count,
+            'description' => $this->description,
             'view_count' => $this->view_count,
             'status' => $this->status,
             'created_at' => $this->created_at,

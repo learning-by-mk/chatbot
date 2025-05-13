@@ -2,75 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
-use App\Http\Resources\CategoryResource;
-use App\Models\Category;
+use App\Http\Requests\SettingRequest;
+use App\Http\Resources\SettingResouce;
+use App\Http\Resources\SettingResource;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
-class CategoryController extends Controller
+class SettingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        // $settings = Setting::all();
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
-        $categories = QueryBuilder::for(Category::class)
+        $settings = QueryBuilder::for(Setting::class)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
-        return CategoryResource::collection($categories);
+        return SettingResource::collection($settings);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCategoryRequest $request)
+    public function store(SettingRequest $request)
     {
         $data = $request->validated();
-        $category = Category::create($data);
-        return new CategoryResource($category);
+        $setting = Setting::create($data);
+        return new SettingResource($setting);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Category $category)
+    public function show(Request $request, Setting $setting)
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
-        $category = $category->load($with_vals);
-        return new CategoryResource($category);
+        $setting = $setting->load($with_vals);
+        return new SettingResource($setting);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(SettingRequest $request, Setting $setting)
     {
         $data = $request->validated();
-        $category->update($data);
-        return new CategoryResource($category);
+        $setting->update($data);
+        return new SettingResource($setting);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category)
+    public function destroy(Setting $setting)
     {
         try {
-            $category->delete();
+            $setting->delete();
             return response()->json([
                 'status' => true,
-                'message' => 'Category deleted successfully'
+                'message' => 'Setting deleted successfully'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Category not deleted'
-            ], 500);
+                'message' => 'Setting deleted failed with error: ' . $e->getMessage()
+            ]);
         }
     }
 }

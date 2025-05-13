@@ -12,19 +12,20 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
-            CategorySeeder::class,
-            DocumentSeeder::class,
-            ChatbotQuestionSeeder::class,
-            ChatSeeder::class,
-            CommentSeeder::class,
-            FavoriteSeeder::class,
-            DownloadSeeder::class,
-            SystemConfigSeeder::class,
-            AiSummarySeeder::class,
-            AiVoiceSeeder::class,
+            // RoleSeeder::class,
+            // PermissionSeeder::class,
+            // UserSeeder::class,
+            // CategorySeeder::class,
+            // DocumentSeeder::class,
+            // ChatbotQuestionSeeder::class,
+            // ChatSeeder::class,
+            // CommentSeeder::class,
+            // FavoriteSeeder::class,
+            // DownloadSeeder::class,
+            // AiSummarySeeder::class,
+            // AiVoiceSeeder::class,
+            SettingGroupSeeder::class,
+            SettingSeeder::class,
         ]);
     }
 }
