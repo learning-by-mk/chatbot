@@ -78,8 +78,8 @@ class UserController extends Controller
         } else {
             unset($data['avatar']);
         }
-        if (isset($data['image_file_id'])) {
-            $file = File::find($data['image_file_id']);
+        if (isset($data['avatar_file_id'])) {
+            $file = File::find($data['avatar_file_id']);
             $file->user_id = $user->id;
             $file->save();
         }

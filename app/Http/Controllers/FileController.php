@@ -60,7 +60,7 @@ class FileController extends Controller
                 'mime' => $disk->mimeType($path),
                 'hash' => $md5_hash,
                 'uuid' => (string) Str::uuid(),
-                'url' => '/storage/' . $folder . '/' . $path,
+                'url' => Storage::url($path),
             ]);
         }
 

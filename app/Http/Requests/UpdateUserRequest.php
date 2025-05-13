@@ -31,7 +31,7 @@ class UpdateUserRequest extends FormRequest
             'phone' => 'nullable|string|max:255',
             'hobbies' => 'nullable|string|max:500',
             'status' => 'nullable|in:active,inactive',
-            'image_file_id' => 'nullable|exists:files,id',
+            'avatar_file_id' => 'nullable|exists:files,id',
         ];
     }
 }

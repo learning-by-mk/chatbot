@@ -17,7 +17,8 @@ class AuthenticatedSessionController extends Controller
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
-        $user = $request->user()->load($with_vals);
+        $user = $request->user();
+        $user->load($with_vals);
         $userResource = new UserResource($user);
         return response()->json([
             ...$userResource->toArray($request)
