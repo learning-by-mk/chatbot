@@ -17,6 +17,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ViewController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
     // Route::get('/{uuid?}', [ChatController::class, 'chat'])->name('chat.chat');
@@ -39,9 +40,15 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::apiResource('/favorites', FavoriteController::class)->names('admin.favorites');
     Route::apiResource('/downloads', DownloadController::class)->names('admin.downloads');
     Route::apiResource('/ai-voices', AiVoiceController::class)->names('admin.ai-voices');
-    Route::apiResource('/documents', DocumentController::class)->names('admin.documents');
     Route::apiResource('/categories', CategoryController::class)->names('admin.categories');
+
+    Route::apiResource('/documents', DocumentController::class)->names('admin.documents');
+    Route::post('/documents/{document}/favorite', [DocumentController::class, 'favorite'])->name('admin.documents.favorite');
+    Route::delete('/documents/{document}/unfavorite', [DocumentController::class, 'unfavorite'])->name('admin.documents.unfavorite');
+    Route::get('/documents/{document}/is_favorite', [DocumentController::class, 'is_favorite'])->name('admin.documents.is_favorite');
+
     Route::apiResource('/files', FileController::class)->names('admin.files');
+    Route::apiResource('/views', ViewController::class)->names('admin.views');
 });
 
 require __DIR__ . '/auth.php';

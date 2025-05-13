@@ -80,4 +80,28 @@ class DocumentController extends Controller
             ], 500);
         }
     }
+
+    public function is_favorite(Document $document)
+    {
+        $is_favorite = $document->favorites()->where('user_id', Auth::id())->exists();
+        return response()->json([
+            'is_favorite' => $is_favorite
+        ]);
+    }
+
+    public function favorite(Document $document)
+    {
+        $document->favorites()->create(['user_id' => Auth::id()]);
+        return response()->json([
+            'message' => 'Document favorited successfully'
+        ]);
+    }
+
+    public function unfavorite(Document $document)
+    {
+        $document->favorites()->where('user_id', Auth::id())->delete();
+        return response()->json([
+            'message' => 'Document unfavorited successfully'
+        ]);
+    }
 }
