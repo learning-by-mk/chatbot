@@ -11,7 +11,7 @@ class StoreDocumentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,17 @@ class StoreDocumentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'file_id' => 'required|exists:files,id',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_ids' => [
+                'required',
+                'array',
+                'exists:categories,id',
+            ],
+            'author_id' => 'required|exists:users,id',
+            'uploaded_by_id' => 'required|exists:users,id',
+            'status' => 'required|in:pending,approved,rejected,draft',
         ];
     }
 }

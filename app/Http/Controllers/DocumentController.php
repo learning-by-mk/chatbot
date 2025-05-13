@@ -29,11 +29,9 @@ class DocumentController extends Controller
      */
     public function store(StoreDocumentRequest $request)
     {
-        $file = $request->file('file');
-        $path = $file->store('documents', ['disk' => 'public']);
         $data = $request->validated();
-        $data['file'] = $path;
         $document = Document::create($data);
+        $document->categories()->sync($data['category_ids']);
         return new DocumentResource($document);
     }
 
@@ -55,6 +53,8 @@ class DocumentController extends Controller
     {
         $data = $request->validated();
         $document->update($data);
+        $document->categories()->sync($data['category_ids']);
+        $document->save();
         return new DocumentResource($document);
     }
 

@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Observers\DocumentObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Document extends Model
 {
+    use HasFactory;
     protected $guarded = [
         'comments',
         'ratings',
@@ -20,7 +25,15 @@ class Document extends Model
         'categories',
         'author',
         'uploaded_by',
+        'file',
     ];
+
+    public function downloadCount(): Attribute
+    {
+        return new Attribute(
+            get: fn() => $this->downloads()->count(),
+        );
+    }
 
     public function comments(): HasMany
     {
@@ -70,5 +83,10 @@ class Document extends Model
     public function downloads(): HasMany
     {
         return $this->hasMany(Download::class);
+    }
+
+    public function file(): BelongsTo
+    {
+        return $this->belongsTo(File::class);
     }
 }

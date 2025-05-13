@@ -16,12 +16,12 @@ class UserResource extends JsonResource
     public function toArray(Request $request): array
     {
         $user = parent::toArray($request);
-        // $avatar = $this->avatar;
+        $avatar = $this->whenLoaded('avatar', fn() => new FileResource($this->avatar));
+        $avatar = $avatar ? [$avatar] : null;
         return [
             ...$user,
             'isAdmin' => $this->isAdmin(),
-            'avatar' => [$this->whenLoaded('avatar', fn() => new FileResource($this->avatar))],
-            'hehe' => $this->whenLoaded('avatar', fn() => new FileResource($this->avatar)),
+            'avatar' => $avatar,
             'roles' => $this->roles,
             'permissions' => $this->permissions,
             'posts' => $this->whenLoaded("posts", fn() => PostResource::collection($this->posts), [])

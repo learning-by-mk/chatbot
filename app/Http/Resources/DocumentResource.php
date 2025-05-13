@@ -18,16 +18,11 @@ class DocumentResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'content' => $this->content,
-            'file_path' => $this->file_path,
-            'file_type' => $this->file_type,
-            'file_size' => $this->file_size,
             'author_id' => $this->author_id,
             'uploaded_by_id' => $this->uploaded_by_id,
-            'category_id' => $this->category_id,
             'publish_date' => $this->publish_date,
-            'download_count' => $this->download_count,
+            'downloadCount' => $this->downloadCount,
             'description' => $this->description,
-            'view_count' => $this->view_count,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -41,6 +36,8 @@ class DocumentResource extends JsonResource
             'categories' => $this->whenLoaded('categories', fn($categories) => CategoryResource::collection($categories), []),
             'author' => $this->whenLoaded('author', fn($author) => new UserResource($author)),
             'uploaded_by' => $this->whenLoaded('uploadedBy', fn($uploadedBy) => new UserResource($uploadedBy)),
+            'file' => $this->whenLoaded('file', fn($file) => [new FileResource($file)]),
+            'file_id' => $this->file_id,
         ];
     }
 }
