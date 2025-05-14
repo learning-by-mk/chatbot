@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(File::class, 'avatar_file_id');
     }
+
+    public function favorites(): HasMany
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

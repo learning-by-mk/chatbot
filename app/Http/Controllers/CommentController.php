@@ -6,6 +6,8 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
+use App\Models\Document;
+use App\Models\CommentLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
@@ -77,5 +79,58 @@ class CommentController extends Controller
         }
     }
 
-    // TODO: is_like, like, unlike
+    public function get_like_ids(Request $request, Document $document)
+    {
+        $user_id = Auth::id();
+
+        // Lấy tất cả comments của document
+        $commentIds = $document->comments()->pluck('id');
+
+        // Lấy tất cả comment_like của người dùng hiện tại trong các comment thuộc document này
+        $likedCommentIds = CommentLike::whereIn('comment_id', $commentIds)
+            ->where('user_id', $user_id)
+            ->pluck('comment_id');
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Lấy danh sách comment đã like thành công',
+            'like_ids' => $likedCommentIds
+        ]);
+    }
+
+    public function like(Request $request, Comment $comment)
+    {
+        $user_id = Auth::id();
+
+        // Kiểm tra xem người dùng đã like comment này chưa
+        $exists = CommentLike::where('comment_id', $comment->id)
+            ->where('user_id', $user_id)
+            ->exists();
+
+        if (!$exists) {
+            CommentLike::create([
+                'comment_id' => $comment->id,
+                'user_id' => $user_id
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Comment liked successfully'
+        ]);
+    }
+
+    public function unlike(Request $request, Comment $comment)
+    {
+        $user_id = Auth::id();
+
+        CommentLike::where('comment_id', $comment->id)
+            ->where('user_id', $user_id)
+            ->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Comment unliked successfully'
+        ]);
+    }
 }

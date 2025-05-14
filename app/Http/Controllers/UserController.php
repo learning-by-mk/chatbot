@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\DocumentResource;
 use App\Http\Resources\UserResource;
 use App\Models\File;
 use App\Models\User;
@@ -106,5 +107,14 @@ class UserController extends Controller
                 'message' => 'User not deleted'
             ], 500);
         }
+    }
+
+    public function favorites(Request $request)
+    {
+        $load = $request->get('load', "");
+        $user = $request->user();
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $documents = $user->favorites()->with($with_vals)->paginate(1000, ['*'], 'page', 1);
+        return DocumentResource::collection($documents);
     }
 }

@@ -9,6 +9,8 @@ use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class DocumentController extends Controller
@@ -20,9 +22,21 @@ class DocumentController extends Controller
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
+
         $documents = QueryBuilder::for(Document::class)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
+        return DocumentResource::collection($documents);
+    }
+
+    public function user_favorites(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $documents = Document::whereHas('favorites', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->with($with_vals)->paginate(1000, ['*'], 'page', 1);
         return DocumentResource::collection($documents);
     }
 
@@ -89,6 +103,16 @@ class DocumentController extends Controller
             'is_favorite' => $is_favorite
         ]);
     }
+
+    // public function list_favorite(Request $request)
+    // {
+    //     $load = $request->get('load', "");
+    //     $with_vals = array_filter(array_map('trim', explode(',', $load)));
+    //     $documents = Document::whereHas('favorites', function ($query) {
+    //         $query->where('user_id', Auth::id());
+    //     })->with($with_vals)->paginate(1000, ['*'], 'page', 1);
+    //     return DocumentResource::collection($documents);
+    // }
 
     public function favorite(Document $document)
     {
