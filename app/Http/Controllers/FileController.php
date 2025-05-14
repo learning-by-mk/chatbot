@@ -61,6 +61,7 @@ class FileController extends Controller
                 'hash' => $md5_hash,
                 'uuid' => (string) Str::uuid(),
                 'url' => Storage::url($path),
+                'absolute_url' => env('APP_URL') . Storage::url($path),
             ]);
         }
 
@@ -80,14 +81,6 @@ class FileController extends Controller
         $path = $file->path;
         $content = $disk->get($path);
         return response($content)->header('Content-Type', $file->mime);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(File $file)
-    {
-        return new FileResource($file);
     }
 
     /**

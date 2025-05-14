@@ -31,7 +31,7 @@ class UpdateDocumentRequest extends FormRequest
             ],
             'author_id' => 'required|exists:users,id',
             'uploaded_by_id' => 'required|exists:users,id',
-            'status' => 'required|in:pending,approved,rejected,draft',
+            'status' => 'nullable|in:pending,approved,rejected,draft',
             'file_id' => 'required|exists:files,id',
             'image_id' => 'required|exists:files,id',
             'content' => 'nullable|string',

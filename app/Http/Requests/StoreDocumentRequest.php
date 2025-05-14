@@ -33,8 +33,9 @@ class StoreDocumentRequest extends FormRequest
             ],
             'author_id' => 'required|exists:users,id',
             'uploaded_by_id' => 'nullable|exists:users,id',
-            'status' => 'required|in:pending,approved,rejected,draft',
+            'status' => 'nullable|in:pending,approved,rejected,draft',
             'content' => 'nullable|string',
+            'is_draft' => 'nullable|boolean',
         ];
     }
 }

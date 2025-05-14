@@ -69,6 +69,11 @@ class User extends Authenticatable
         return $this->hasMany(Favorite::class);
     }
 
+    public function documents(): HasMany
+    {
+        return $this->hasMany(Document::class, 'author_id');
+    }
+
     public function statistics()
     {
         $totalUsers = User::count();

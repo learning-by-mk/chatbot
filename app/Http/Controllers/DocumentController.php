@@ -7,11 +7,13 @@ use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
+use App\Models\DocumentLike;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -22,8 +24,10 @@ class DocumentController extends Controller
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $allowFilter = Schema::getColumnListing('documents');
 
         $documents = QueryBuilder::for(Document::class)
+            ->allowedFilters($allowFilter)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
         return DocumentResource::collection($documents);
@@ -40,6 +44,17 @@ class DocumentController extends Controller
         return DocumentResource::collection($documents);
     }
 
+    public function user_liked(Request $request)
+    {
+        $user_id = $request->user()->id;
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $documents = Document::whereHas('likes', function ($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })->with($with_vals)->paginate(1000, ['*'], 'page', 1);
+        return DocumentResource::collection($documents);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -49,6 +64,11 @@ class DocumentController extends Controller
         if (!isset($data['uploaded_by_id'])) {
             $data['uploaded_by_id'] = Auth::id();
         }
+        if (isset($data['is_draft']) && $data['is_draft']) {
+            unset($data['is_draft']);
+            $data['status'] = 'draft';
+        }
+        $data['slug'] = Str::slug($data['title']);
         $document = Document::create($data);
         $document->categories()->sync($data['category_ids']);
         return new DocumentResource($document);
@@ -71,6 +91,7 @@ class DocumentController extends Controller
     public function update(UpdateDocumentRequest $request, Document $document)
     {
         $data = $request->validated();
+        $data['slug'] = Str::slug($data['title']);
         $document->update($data);
         $document->categories()->sync($data['category_ids']);
         $document->save();
@@ -100,7 +121,9 @@ class DocumentController extends Controller
     {
         $is_favorite = $document->favorites()->where('user_id', Auth::id())->exists();
         return response()->json([
-            'is_favorite' => $is_favorite
+            'data' => [
+                'is_favorite' => $is_favorite
+            ]
         ]);
     }
 
@@ -136,5 +159,50 @@ class DocumentController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $comments = $document->comments()->with($with_vals)->paginate(1000, ['*'], 'page', 1);
         return CommentResource::collection($comments);
+    }
+
+    public function is_liked(Document $document)
+    {
+        $is_liked = $document->likes()->where('user_id', Auth::id())->exists();
+        return response()->json([
+            'data' => [
+                'is_liked' => $is_liked
+            ]
+        ]);
+    }
+
+    public function like(Request $request, Document $document)
+    {
+        $user_id = Auth::id();
+
+        $exists = DocumentLike::where('document_id', $document->id)
+            ->where('user_id', $user_id)
+            ->exists();
+
+        if (!$exists) {
+            DocumentLike::create([
+                'document_id' => $document->id,
+                'user_id' => $user_id
+            ]);
+        }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Document liked successfully'
+        ]);
+    }
+
+    public function unlike(Request $request, Document $document)
+    {
+        $user_id = Auth::id();
+
+        DocumentLike::where('document_id', $document->id)
+            ->where('user_id', $user_id)
+            ->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Document unliked successfully'
+        ]);
     }
 }

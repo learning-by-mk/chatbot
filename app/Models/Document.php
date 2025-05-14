@@ -26,6 +26,7 @@ class Document extends Model
         'author',
         'uploaded_by',
         'file',
+        'likes'
     ];
 
     public function comments(): HasMany
@@ -33,9 +34,14 @@ class Document extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function ratings(): HasMany
+    public function ratings()
     {
-        return $this->hasMany(Rating::class);
+        $comments = $this->comments()->whereNull('parent_id')->get();
+        $ratings = 0;
+        foreach ($comments as $comment) {
+            $ratings += $comment->score;
+        }
+        return round($ratings / $comments->count(), 1);
     }
 
     public function favorites(): HasMany
@@ -91,5 +97,10 @@ class Document extends Model
     public function image(): BelongsTo
     {
         return $this->belongsTo(File::class, 'image_id');
+    }
+
+    public function likes(): HasMany
+    {
+        return $this->hasMany(DocumentLike::class);
     }
 }

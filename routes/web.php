@@ -17,6 +17,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ViewController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
@@ -30,6 +31,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('user/me', [AuthenticatedSessionController::class, 'me']);
     // Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::apiResource('/users', UserController::class)->names('admin.users');
+    Route::get('/users/documents/list', [UserController::class, 'documents'])->name('admin.users.documents');
+    Route::delete('/users/documents/{document}', [UserController::class, 'destroy_document'])->name('admin.users.destroy_document');
     Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('admin.users.statistics');
 
     Route::apiResource('/settings', SettingController::class)->names('admin.settings');
@@ -44,11 +47,15 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::apiResource('/categories', CategoryController::class)->names('admin.categories');
 
     Route::get('/documents/favorites/user_favorites', [DocumentController::class, 'user_favorites'])->name('admin.documents.user_favorites');
+    Route::get('/documents/liked/user_liked', [DocumentController::class, 'user_liked'])->name('admin.documents.user_liked');
     Route::apiResource('/documents', DocumentController::class)->names('admin.documents');
     Route::post('/documents/{document}/favorite', [DocumentController::class, 'favorite'])->name('admin.documents.favorite');
     Route::delete('/documents/{document}/unfavorite', [DocumentController::class, 'unfavorite'])->name('admin.documents.unfavorite');
     Route::get('/documents/{document}/is_favorite', [DocumentController::class, 'is_favorite'])->name('admin.documents.is_favorite');
     Route::get('/documents/{document}/comments', [DocumentController::class, 'get_comments'])->name('admin.documents.comments');
+    Route::get('/documents/{document}/is_liked', [DocumentController::class, 'is_liked'])->name('admin.documents.is_liked');
+    Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('admin.documents.like');
+    Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('admin.documents.unlike');
 
     Route::apiResource('/files', FileController::class)->names('admin.files');
     Route::apiResource('/views', ViewController::class)->names('admin.views');
@@ -57,6 +64,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('/comments/{document}/get_like_ids', [CommentController::class, 'get_like_ids'])->name('admin.comments.get_like_ids');
     Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('admin.comments.like');
     Route::delete('/comments/{comment}/unlike', [CommentController::class, 'unlike'])->name('admin.comments.unlike');
+
+    Route::apiResource('/ratings', RatingController::class)->names('admin.ratings');
 });
 
 require __DIR__ . '/auth.php';

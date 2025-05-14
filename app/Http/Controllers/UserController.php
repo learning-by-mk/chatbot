@@ -6,12 +6,15 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\DocumentResource;
 use App\Http\Resources\UserResource;
+use App\Models\Document;
 use App\Models\File;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class UserController extends Controller
@@ -23,10 +26,38 @@ class UserController extends Controller
     {
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
+
+        $allowFilter = Schema::getColumnListing('users');
+        $allowFilter = array_merge($allowFilter, [
+            AllowedFilter::callback('ids', function ($query, $value) {
+                $query->whereIn('id', $value);
+            })
+        ]);
+
         $users = QueryBuilder::for(User::class)
+            ->allowedFilters($allowFilter)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
         return UserResource::collection($users);
+    }
+
+    public function documents(Request $request)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $user = $request->user();
+
+        $allowFilter = Schema::getColumnListing('documents');
+        $resource = QueryBuilder::for(Document::class)
+            ->allowedFilters($allowFilter)
+            ->where(function ($query) use ($user) {
+                $query->where('author_id', $user->id)
+                    ->orWhere('uploaded_by_id', $user->id);
+            })
+            ->with($with_vals)
+            ->paginate(1000, ['*'], 'page', 1);
+
+        return DocumentResource::collection($resource);
     }
 
     /**
@@ -118,6 +149,15 @@ class UserController extends Controller
                 'message' => 'User not deleted'
             ], 500);
         }
+    }
+
+    public function destroy_document(Document $document)
+    {
+        $document->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'Document deleted successfully'
+        ]);
     }
 
     public function favorites(Request $request)
