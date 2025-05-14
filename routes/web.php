@@ -46,6 +46,7 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::post('/documents/{document}/favorite', [DocumentController::class, 'favorite'])->name('admin.documents.favorite');
     Route::delete('/documents/{document}/unfavorite', [DocumentController::class, 'unfavorite'])->name('admin.documents.unfavorite');
     Route::get('/documents/{document}/is_favorite', [DocumentController::class, 'is_favorite'])->name('admin.documents.is_favorite');
+    Route::get('/documents/{document}/comments', [DocumentController::class, 'get_comments'])->name('admin.documents.comments');
 
     Route::apiResource('/files', FileController::class)->names('admin.files');
     Route::apiResource('/views', ViewController::class)->names('admin.views');

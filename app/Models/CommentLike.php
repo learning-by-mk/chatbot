@@ -7,15 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CommentLike extends Model
 {
-    protected $guarded = ['comment', 'user'];
+    protected $guarded = ['user'];
 
-    public function comment(): BelongsTo
-    {
-        return $this->belongsTo(Comment::class);
-    }
+    // public function comment(): BelongsTo
+    // {
+    //     return $this->belongsTo(Comment::class);
+    // }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
+    // public function user(): BelongsTo
+    // {
+    //     return $this->belongsTo(User::class);
+    // }
 }

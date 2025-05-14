@@ -18,13 +18,16 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'document_id' => $this->document_id,
             'user_id' => $this->user_id,
-            'content' => $this->content,
+            'parent_id' => $this->parent_id,
+            'comment' => $this->comment,
+            'score' => $this->score,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),
-            'user' => $this->whenLoaded('user', fn($user) => new UserResource($user)),
-            'parent' => $this->whenLoaded('parent', fn($parent) => new CommentResource($parent)),
-            'children' => $this->whenLoaded('children', fn($children) => CommentResource::collection($children), []),
+            'like_count' => $this->likes()->count(),
+            'document' => $this->whenLoaded('document', fn() => new DocumentResource($this->document)),
+            'user' => $this->whenLoaded('user', fn() => new UserResource($this->user)),
+            'parent' => $this->whenLoaded('parent', fn() => new CommentResource($this->parent)),
+            'children' => $this->whenLoaded('children', fn() => CommentResource::collection($this->children), []),
         ];
     }
 }

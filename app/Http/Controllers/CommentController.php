@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class CommentController extends Controller
@@ -30,6 +31,7 @@ class CommentController extends Controller
     public function store(StoreCommentRequest $request)
     {
         $data = $request->validated();
+        $data['user_id'] = Auth::id();
         $comment = Comment::create($data);
         return new CommentResource($comment);
     }
@@ -51,6 +53,7 @@ class CommentController extends Controller
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
         $data = $request->validated();
+        $data['user_id'] = Auth::id();
         $comment->update($data);
         return new CommentResource($comment);
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
+use App\Http\Resources\CommentResource;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use Illuminate\Http\Request;
@@ -103,5 +104,13 @@ class DocumentController extends Controller
         return response()->json([
             'message' => 'Document unfavorited successfully'
         ]);
+    }
+
+    public function get_comments(Request $request, Document $document)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $comments = $document->comments()->with($with_vals)->paginate(1000, ['*'], 'page', 1);
+        return CommentResource::collection($comments);
     }
 }
