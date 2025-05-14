@@ -30,6 +30,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('user/me', [AuthenticatedSessionController::class, 'me']);
     // Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::apiResource('/users', UserController::class)->names('admin.users');
+    Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('admin.users.statistics');
+
     Route::apiResource('/settings', SettingController::class)->names('admin.settings');
     Route::apiResource('/setting-groups', SettingGroupController::class)->names('admin.setting-groups');
     Route::apiResource('/roles', RoleController::class)->names('admin.roles');

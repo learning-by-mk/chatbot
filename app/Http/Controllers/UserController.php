@@ -46,6 +46,17 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
+    public function statistics(Request $request)
+    {
+        $user = $request->user();
+        $statistics = $user->statistics();
+        return response()->json([
+            'data' => $statistics,
+            'status' => true,
+            'message' => 'Statistics retrieved successfully'
+        ]);
+    }
+
     /**
      * Display the specified resource.
      */
