@@ -29,12 +29,51 @@ class DocumentController extends Controller
             AllowedFilter::callback('search', function ($query, $value) {
                 $query->where('title', 'like', "%$value%")
                     ->orWhere('description', 'like', "%$value%")
-                    ->orWhereHas('categories', function ($query) use ($value) {
+                    ->orWhereHas('topics', function ($query) use ($value) {
+                        $query->where('name', 'like', "%$value%");
+                    })
+                    ->orWhereHas('category', function ($query) use ($value) {
                         $query->where('name', 'like', "%$value%");
                     })
                     ->orWhereHas('author', function ($query) use ($value) {
                         $query->where('name', 'like', "%$value%");
                     });
+            }),
+            AllowedFilter::callback('categories', function ($query, $value) {
+                $categories = is_array($value) ? $value : array_map('intval', explode(',', $value));
+                return $query->whereIn('category_id', $categories);
+            }),
+
+            AllowedFilter::callback('topics', function ($query, $value) {
+                $topics = is_array($value) ? $value : array_map('intval', explode(',', $value));
+                return $query->whereHas('topics', function ($query) use ($topics) {
+                    $query->whereIn('topics.id', $topics);
+                });
+            }),
+
+            AllowedFilter::callback('rating', function ($query, $value) {
+                if ($value && isset($value['operator'])) {
+                    $operator = $value['operator'];
+                    $ratingValue = $value['value'];
+                    if ($ratingValue == 0) {
+                        return null;
+                    }
+
+                    switch ($operator) {
+                        case 'gte':
+                            return $query->where('average_rating', '>=', $ratingValue);
+                        case 'lte':
+                            return $query->where('average_rating', '<=', $ratingValue);
+                        case 'gt':
+                            return $query->where('average_rating', '>', $ratingValue);
+                        case 'lt':
+                            return $query->where('average_rating', '<', $ratingValue);
+                        default:
+                            return $query->where('average_rating', $ratingValue);
+                    }
+                } else {
+                    return $query->where('average_rating', $value);
+                }
             }),
         ]);
 

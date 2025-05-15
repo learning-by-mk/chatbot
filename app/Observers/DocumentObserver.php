@@ -10,10 +10,7 @@ class DocumentObserver
     /**
      * Handle the Document "created" event.
      */
-    public function created(Document $document): void
-    {
-        Log::debug("Observer: Document created event fired", ['id' => $document->id]);
-    }
+    public function created(Document $document): void {}
 
     /**
      * Handle the Document "updated" event.

@@ -30,6 +30,13 @@ class Document extends Model
         'likes'
     ];
 
+    protected function casts()
+    {
+        return [
+            'average_rating' => 'decimal:1',
+        ];
+    }
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class);
