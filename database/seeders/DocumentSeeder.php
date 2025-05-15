@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Document;
 use App\Models\User;
 use App\Models\Category;
+use App\Models\Topic;
 use Illuminate\Database\Seeder;
 
 class DocumentSeeder extends Seeder
@@ -15,6 +16,8 @@ class DocumentSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
+        $categories = Category::all();
+        $topics = Topic::all();
 
         $documents = [
             [
@@ -23,6 +26,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Hướng dẫn Laravel 12</h1>
                 <p>Tài liệu hướng dẫn chi tiết Laravel 12 cho người mới bắt đầu. Laravel là một PHP framework mạnh mẽ với cú pháp tinh tế và dễ đọc.</p>
                 <h2>Cài đặt Laravel 12</h2>
@@ -42,6 +46,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Cơ bản về Machine Learning</h1>
                 <p>Giới thiệu cơ bản về học máy và các ứng dụng phổ biến trong cuộc sống hàng ngày.</p>
                 <h2>Khái niệm Machine Learning</h2>
@@ -60,6 +65,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Kinh tế vĩ mô</h1>
                 <p>Tài liệu giảng dạy về kinh tế vĩ mô, bao gồm các nguyên lý cơ bản và ứng dụng thực tế.</p>
                 <h2>Các khái niệm cơ bản</h2>
@@ -75,6 +81,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Quản trị doanh nghiệp</h1>
                 <p>Các phương pháp quản trị doanh nghiệp hiệu quả trong thời đại số.</p>
                 <h2>Nguyên tắc quản trị hiện đại</h2>
@@ -92,6 +99,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'pending',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Dược lý học đại cương</h1>
                 <p>Tài liệu dược lý học toàn diện dành cho sinh viên y dược.</p>
                 <h2>Khái niệm cơ bản</h2>
@@ -109,6 +117,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'author_id' => $users->random()->id,
                 'uploaded_by_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Phương pháp giảng dạy hiệu quả</h1>
                 <p>Các phương pháp giảng dạy hiện đại và hiệu quả trong giáo dục.</p>
                 <h2>Giảng dạy tích cực</h2>
@@ -126,6 +135,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Luật Doanh nghiệp 2023</h1>
                 <p>Cập nhật luật doanh nghiệp mới nhất và những thay đổi quan trọng.</p>
                 <h2>Những thay đổi chính</h2>
@@ -143,6 +153,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Vật lý lượng tử cơ bản</h1>
                 <p>Tài liệu về vật lý lượng tử dành cho sinh viên ngành vật lý và các ngành liên quan.</p>
                 <h2>Lý thuyết cơ bản</h2>
@@ -160,6 +171,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'pending',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Thiết kế đồ họa với Adobe Photoshop</h1>
                 <p>Hướng dẫn thiết kế đồ họa chuyên nghiệp sử dụng phần mềm Adobe Photoshop.</p>
                 <h2>Giao diện và công cụ cơ bản</h2>
@@ -179,6 +191,7 @@ class DocumentSeeder extends Seeder
                 'status' => 'approved',
                 'uploaded_by_id' => $users->random()->id,
                 'author_id' => $users->random()->id,
+                'category_id' => $categories->random()->id,
                 'content' => '<h1>Tiếng Anh giao tiếp cơ bản</h1>
                 <p>Tài liệu học tiếng Anh giao tiếp dành cho người mới bắt đầu.</p>
                 <h2>Chào hỏi và giới thiệu</h2>
@@ -195,9 +208,11 @@ class DocumentSeeder extends Seeder
         ];
 
         foreach ($documents as $index => $document) {
-            Document::updateOrCreate([
+            $document_model = Document::updateOrCreate([
                 'title' => $document['title'],
             ], $document);
+            $topic_ids = $topics->random(rand(1, 4))->pluck('id')->toArray();
+            $document_model->topics()->sync($topic_ids);
         }
     }
 }

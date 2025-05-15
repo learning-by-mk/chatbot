@@ -83,7 +83,7 @@ class DocumentController extends Controller
         }
         $data['slug'] = Str::slug($data['title']);
         $document = Document::create($data);
-        $document->categories()->sync($data['category_ids']);
+        $document->topics()->sync($data['topic_ids']);
         return new DocumentResource($document);
     }
 
@@ -106,7 +106,7 @@ class DocumentController extends Controller
         $data = $request->validated();
         $data['slug'] = Str::slug($data['title']);
         $document->update($data);
-        $document->categories()->sync($data['category_ids']);
+        $document->topics()->sync($data['topic_ids']);
         $document->save();
         return new DocumentResource($document);
     }

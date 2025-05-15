@@ -16,7 +16,7 @@ class TopicResource extends JsonResource
     {
         return [
             ...parent::toArray($request),
-            'documents' => DocumentResource::collection($this->documents),
+            'documents' => $this->whenLoaded('documents', fn() => DocumentResource::collection($this->documents), []),
         ];
     }
 }

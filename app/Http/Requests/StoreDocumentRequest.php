@@ -26,10 +26,14 @@ class StoreDocumentRequest extends FormRequest
             'image_id' => 'required|exists:files,id',
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'category_ids' => [
+            'category_id' => [
+                'required',
+                'exists:categories,id',
+            ],
+            'topic_ids' => [
                 'required',
                 'array',
-                'exists:categories,id',
+                'exists:topics,id',
             ],
             'author_id' => 'required|exists:users,id',
             'uploaded_by_id' => 'nullable|exists:users,id',
