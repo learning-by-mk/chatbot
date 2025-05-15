@@ -107,4 +107,17 @@ class User extends Authenticatable
             'userRegistration' => $userRegistration,
         ];
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $url = env('FRONTEND_URL', 'http://localhost:3000') . '/reset-password?token=' . $token . '&email=' . $this->email;
+
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token, $url));
+    }
 }

@@ -22,6 +22,15 @@ Route::middleware(['guest'])->prefix('api')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Thêm route password.reset cho frontend
+    Route::get('reset-password/{token}', function () {
+        return ['status' => 'Redirect to frontend'];
+    })->name('password.reset');
+
+    // Thêm verify route
+    Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, 'verify'])
+        ->name('verification.verify');
 });
 
 Route::middleware('auth:sanctum')->prefix('api')->group(function () {
