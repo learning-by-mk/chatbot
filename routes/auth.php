@@ -17,12 +17,6 @@ Route::middleware(['guest'])->prefix('api')->group(function () {
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::post('login', [AuthenticatedSessionController::class, 'store'])
-        // ->middleware(function ($request, $next) {
-        //     $maxAttempts = (int) Setting::getSettingValue('max_attempts', 5);
-        //     $lockedTime = (int) Setting::getSettingValue('lockout_time', 60);
-        //     // return $next()->with('maxAttempts', $maxAttempts)->with('lockedTime', $lockedTime);
-        //     return app("throttle:{$maxAttempts},{$lockedTime}")->handle($request, $next);
-        // });
         ->middleware('dynamic.throttle');
 
     Route::get('login/is_locked', [AuthenticatedSessionController::class, 'isLocked'])

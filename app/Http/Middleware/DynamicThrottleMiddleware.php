@@ -18,7 +18,7 @@ class DynamicThrottleMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $key = 'login.' . $request->ip() . '|' . $request->input('email');
-        $maxAttempts = (int) Setting::getSettingValue('max_attempts', 5);
+        $maxAttempts = (int) Setting::getSettingValue('max_login_attempts', 5);
         $decayMinutes = (int) Setting::getSettingValue('lockout_time', 1);
 
         if (RateLimiter::tooManyAttempts($key, $maxAttempts)) {

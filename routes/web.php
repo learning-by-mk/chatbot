@@ -29,43 +29,43 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function (
 Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::get('user/me', [AuthenticatedSessionController::class, 'me']);
-    // Route::get('/', [DashboardController::class, 'index'])->name('admin.dashboard');
-    Route::apiResource('/users', UserController::class)->names('admin.users');
-    Route::get('/users/documents/list', [UserController::class, 'documents'])->name('admin.users.documents');
-    Route::delete('/users/documents/{document}', [UserController::class, 'destroy_document'])->name('admin.users.destroy_document');
-    Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('admin.users.statistics');
+    // Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::apiResource('/users', UserController::class)->names('users');
+    Route::get('/users/documents/list', [UserController::class, 'documents'])->name('users.documents');
+    Route::delete('/users/documents/{document}', [UserController::class, 'destroy_document'])->name('users.destroy_document');
+    Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('users.statistics');
 
-    Route::apiResource('/settings', SettingController::class)->names('admin.settings');
-    Route::apiResource('/setting-groups', SettingGroupController::class)->names('admin.setting-groups');
-    Route::apiResource('/roles', RoleController::class)->names('admin.roles');
-    Route::apiResource('/ai-summaries', AiSummaryController::class)->names('admin.ai-summaries');
-    Route::apiResource('/chatbot-questions', ChatbotQuestionController::class)->names('admin.chatbot-questions');
-    Route::apiResource('/chats', ChatController::class)->names('admin.chats');
-    Route::apiResource('/favorites', FavoriteController::class)->names('admin.favorites');
-    Route::apiResource('/downloads', DownloadController::class)->names('admin.downloads');
-    Route::apiResource('/ai-voices', AiVoiceController::class)->names('admin.ai-voices');
-    Route::apiResource('/categories', CategoryController::class)->names('admin.categories');
+    Route::apiResource('/settings', SettingController::class)->names('settings');
+    Route::apiResource('/setting-groups', SettingGroupController::class)->names('setting-groups');
+    Route::apiResource('/roles', RoleController::class)->names('roles');
+    Route::apiResource('/ai-summaries', AiSummaryController::class)->names('ai-summaries');
+    Route::apiResource('/chatbot-questions', ChatbotQuestionController::class)->names('chatbot-questions');
+    Route::apiResource('/chats', ChatController::class)->names('chats');
+    Route::apiResource('/favorites', FavoriteController::class)->names('favorites');
+    Route::apiResource('/downloads', DownloadController::class)->names('downloads');
+    Route::apiResource('/ai-voices', AiVoiceController::class)->names('ai-voices');
+    Route::apiResource('/categories', CategoryController::class)->names('categories');
 
-    Route::get('/documents/favorites/user_favorites', [DocumentController::class, 'user_favorites'])->name('admin.documents.user_favorites');
-    Route::get('/documents/liked/user_liked', [DocumentController::class, 'user_liked'])->name('admin.documents.user_liked');
-    Route::apiResource('/documents', DocumentController::class)->names('admin.documents');
-    Route::post('/documents/{document}/favorite', [DocumentController::class, 'favorite'])->name('admin.documents.favorite');
-    Route::delete('/documents/{document}/unfavorite', [DocumentController::class, 'unfavorite'])->name('admin.documents.unfavorite');
-    Route::get('/documents/{document}/is_favorite', [DocumentController::class, 'is_favorite'])->name('admin.documents.is_favorite');
-    Route::get('/documents/{document}/comments', [DocumentController::class, 'get_comments'])->name('admin.documents.comments');
-    Route::get('/documents/{document}/is_liked', [DocumentController::class, 'is_liked'])->name('admin.documents.is_liked');
-    Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('admin.documents.like');
-    Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('admin.documents.unlike');
+    Route::get('/documents/favorites/user_favorites', [DocumentController::class, 'user_favorites'])->name('documents.user_favorites');
+    Route::get('/documents/liked/user_liked', [DocumentController::class, 'user_liked'])->name('documents.user_liked');
+    Route::apiResource('/documents', DocumentController::class)->names('documents');
+    Route::post('/documents/{document}/favorite', [DocumentController::class, 'favorite'])->name('documents.favorite');
+    Route::delete('/documents/{document}/unfavorite', [DocumentController::class, 'unfavorite'])->name('documents.unfavorite');
+    Route::get('/documents/{document}/is_favorite', [DocumentController::class, 'is_favorite'])->name('documents.is_favorite');
+    Route::get('/documents/{document}/comments', [DocumentController::class, 'get_comments'])->name('documents.comments');
+    Route::get('/documents/{document}/is_liked', [DocumentController::class, 'is_liked'])->name('documents.is_liked');
+    Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('documents.like');
+    Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('documents.unlike');
 
-    Route::apiResource('/files', FileController::class)->names('admin.files');
-    Route::apiResource('/views', ViewController::class)->names('admin.views');
+    Route::apiResource('/files', FileController::class)->names('files');
+    Route::apiResource('/views', ViewController::class)->names('views');
 
-    Route::apiResource('/comments', CommentController::class)->names('admin.comments');
-    Route::get('/comments/{document}/get_like_ids', [CommentController::class, 'get_like_ids'])->name('admin.comments.get_like_ids');
-    Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('admin.comments.like');
-    Route::delete('/comments/{comment}/unlike', [CommentController::class, 'unlike'])->name('admin.comments.unlike');
+    Route::apiResource('/comments', CommentController::class)->names('comments');
+    Route::get('/comments/{document}/get_like_ids', [CommentController::class, 'get_like_ids'])->name('comments.get_like_ids');
+    Route::post('/comments/{comment}/like', [CommentController::class, 'like'])->name('comments.like');
+    Route::delete('/comments/{comment}/unlike', [CommentController::class, 'unlike'])->name('comments.unlike');
 
-    Route::apiResource('/ratings', RatingController::class)->names('admin.ratings');
+    Route::apiResource('/ratings', RatingController::class)->names('ratings');
 });
 
 require __DIR__ . '/auth.php';

@@ -15,26 +15,32 @@ class SettingGroupSeeder extends Seeder
     {
         $groups = [
             [
+                'key' => 'general',
                 'name' => 'Cấu hình chung',
                 'description' => 'Cấu hình chung của hệ thống',
             ],
             [
+                'key' => 'api',
                 'name' => 'Khóa API',
                 'description' => 'Cấu hình khóa API cho hệ thống',
             ],
             [
-                'name' => 'Email',
-                'description' => 'Cấu hình email cho hệ thống',
+                'key' => 'info',
+                'name' => 'Thông tin liên hệ',
+                'description' => 'Cấu hình thông tin liên hệ cho hệ thống',
             ],
             [
+                'key' => 'limit',
                 'name' => 'Giới hạn',
                 'description' => 'Cấu hình giới hạn cho hệ thống',
             ],
             [
+                'key' => 'notification',
                 'name' => 'Thông báo',
                 'description' => 'Cấu hình thông báo cho hệ thống',
             ],
             [
+                'key' => 'menu',
                 'name' => 'Cấu hình menu',
                 'description' => 'Cấu hình menu cho hệ thống',
             ],
@@ -42,7 +48,7 @@ class SettingGroupSeeder extends Seeder
 
         foreach ($groups as $group) {
             SettingGroup::updateOrCreate([
-                'name' => $group['name'],
+                'key' => $group['key'],
             ], $group);
         }
     }

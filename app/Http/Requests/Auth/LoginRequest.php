@@ -70,7 +70,7 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        $maxAttempts = (int) Setting::getSettingValue('max_attempts', 5);
+        $maxAttempts = (int) Setting::getSettingValue('max_login_attempts', 5);
         if (!RateLimiter::tooManyAttempts($this->throttleKey(), $maxAttempts)) {
             return;
         }

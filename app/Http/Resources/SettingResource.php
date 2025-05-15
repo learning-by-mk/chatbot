@@ -15,12 +15,11 @@ class SettingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'key' => $this->key,
-            'value' => $this->value,
-            'description' => $this->description,
+            ...parent::toArray($request),
             'setting_group_id' => $this->setting_group_id,
             'group' => $this->whenLoaded('group', fn($group) => new SettingGroupResource($group)),
+            'parent' => $this->whenLoaded('parent', fn($parent) => new SettingResource($parent)),
+            'children' => $this->whenLoaded('children', fn($children) => SettingResource::collection($children), []),
         ];
     }
 }
