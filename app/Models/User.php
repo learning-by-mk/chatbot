@@ -74,6 +74,16 @@ class User extends Authenticatable
         return $this->hasMany(Document::class, 'author_id');
     }
 
+    public function isLocked(): bool
+    {
+        return $this->locked_until && now()->lessThan($this->locked_until);
+    }
+
+    public function getLockTimeRemaining()
+    {
+        return $this->locked_until ? now()->diffInSeconds($this->locked_until) : null;
+    }
+
     public function statistics()
     {
         $totalUsers = User::count();

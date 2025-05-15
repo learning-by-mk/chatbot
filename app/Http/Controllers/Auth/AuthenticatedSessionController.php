@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\UserResource;
+use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -30,18 +32,40 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
-        $request->authenticate();
+        $maxAttempts = (int) Setting::getSettingValue('max_login_attempts', 5);
+        $attempts = RateLimiter::attempts($request->throttleKey());
+        $remainingAttempts = $maxAttempts - $attempts;
 
-        $request->session()->regenerate();
+        // Nếu số lần còn lại ít, thêm cảnh báo vào response
+        $warning = null;
+        if ($remainingAttempts <= 2 && $remainingAttempts > 0) {
+            $warning = "Còn {$remainingAttempts} lần thử đăng nhập. Sau đó tài khoản sẽ bị khóa tạm thời.";
+        }
+        if ($remainingAttempts <= 0) {
+            $seconds = RateLimiter::availableIn($request->throttleKey());
+            $locked_time = (int) Setting::getSettingValue('lockout_time', 60);
+            $warning = "Tài khoản đã bị khóa tạm thời. Vui lòng thử lại sau " . ceil($seconds / 60) . " phút.";
+        }
+        try {
+            $request->authenticate();
 
-        $user = $request->user();
-        $token = $user->createToken('Login at ' . now()->format('Y-m-d H:i:s'));
+            $request->session()->regenerate();
 
-        return response([
-            'user' => new UserResource($user),
-            'token' => $token->plainTextToken,
-            'isAdmin' => $user->hasRole('admin'),
-        ]);
+            $user = $request->user();
+            $token = $user->createToken('Login at ' . now()->format('Y-m-d H:i:s'));
+
+            return response([
+                'user' => new UserResource($user),
+                'token' => $token->plainTextToken,
+                'isAdmin' => $user->hasRole('admin'),
+            ]);
+        } catch (\Exception $e) {
+            return response([
+                'message' => $e->getMessage(),
+                'warning' => $warning,
+                'locked_time' => $locked_time ?? 0,
+            ], 422);
+        }
     }
 
     /**

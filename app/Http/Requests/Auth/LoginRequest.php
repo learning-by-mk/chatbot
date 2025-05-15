@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -42,7 +44,8 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            $lockedTime = (int) Setting::getSettingValue('lockout_time', 60);
+            RateLimiter::hit($this->throttleKey(), $lockedTime * 60);
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -50,6 +53,14 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        /** @var User $user */
+        $user = Auth::user();
+        if ($user) {
+            $user->locked_until = null;
+            $user->login_attempts = 0;
+            $user->save();
+        }
     }
 
     /**
@@ -59,13 +70,24 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        $maxAttempts = (int) Setting::getSettingValue('max_attempts', 5);
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), $maxAttempts)) {
             return;
         }
 
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        if (request()->user()) {
+            $user = User::where('email', $this->email)->first();
+            if ($user) {
+                $user->update([
+                    'login_attempts' => $maxAttempts,
+                    'locked_until' => now()->addSeconds($seconds),
+                ]);
+            }
+        }
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
@@ -80,6 +102,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }

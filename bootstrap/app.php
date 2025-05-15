@@ -22,6 +22,9 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+        $middleware->alias([
+            'dynamic.throttle' => \App\Http\Middleware\DynamicThrottleMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

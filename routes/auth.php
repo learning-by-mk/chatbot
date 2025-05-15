@@ -9,13 +9,27 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['guest'])->prefix('api')->group(function () {
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
-    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+    Route::post('login', [AuthenticatedSessionController::class, 'store'])
+        // ->middleware(function ($request, $next) {
+        //     $maxAttempts = (int) Setting::getSettingValue('max_attempts', 5);
+        //     $lockedTime = (int) Setting::getSettingValue('lockout_time', 60);
+        //     // return $next()->with('maxAttempts', $maxAttempts)->with('lockedTime', $lockedTime);
+        //     return app("throttle:{$maxAttempts},{$lockedTime}")->handle($request, $next);
+        // });
+        ->middleware('dynamic.throttle');
+
+    Route::get('login/is_locked', [AuthenticatedSessionController::class, 'isLocked'])
+        ->name('login.is_locked');
+
+    Route::get('login/get_lock_time_remaining', [AuthenticatedSessionController::class, 'getLockTimeRemaining'])
+        ->name('login.get_lock_time_remaining');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
         ->name('password.email');
