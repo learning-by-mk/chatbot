@@ -17,6 +17,7 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ViewController;
 
@@ -66,6 +67,14 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::delete('/comments/{comment}/unlike', [CommentController::class, 'unlike'])->name('comments.unlike');
 
     Route::apiResource('/ratings', RatingController::class)->names('ratings');
+
+    Route::get('user/inquiries', [InquiryController::class, 'userInquiries']);
+    Route::post('inquiries', [InquiryController::class, 'store']);
+    Route::get('inquiries/{inquiry}', [InquiryController::class, 'show']);
+
+    // Route cho admin
+    Route::get('admin/inquiries', [InquiryController::class, 'index']);
+    Route::post('inquiries/{inquiry}/respond', [InquiryController::class, 'respond']);
 });
 
 require __DIR__ . '/auth.php';

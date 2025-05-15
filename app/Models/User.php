@@ -27,7 +27,7 @@ class User extends Authenticatable
     //     'email',
     //     'password',
     // ];
-    protected $guarded = [];
+    protected $guarded = ['inquiries', 'respondedInquiries', 'avatar', 'favorites', 'documents'];
 
     protected $guard_name = 'web';
 
@@ -82,6 +82,16 @@ class User extends Authenticatable
     public function getLockTimeRemaining()
     {
         return $this->locked_until ? now()->diffInSeconds($this->locked_until) : null;
+    }
+
+    public function inquiries(): HasMany
+    {
+        return $this->hasMany(Inquiry::class);
+    }
+
+    public function respondedInquiries(): HasMany
+    {
+        return $this->hasMany(Inquiry::class, 'responded_by_id');
     }
 
     public function statistics()
