@@ -41,7 +41,7 @@ class Document extends Model
         foreach ($comments as $comment) {
             $ratings += $comment->score;
         }
-        return round($ratings / $comments->count(), 1);
+        return round($ratings / ($comments->count() || 1), 1);
     }
 
     public function favorites(): HasMany
