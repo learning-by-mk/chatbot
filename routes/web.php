@@ -19,6 +19,7 @@ use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\ViewController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
@@ -75,6 +76,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     // Route cho admin
     Route::get('admin/inquiries', [InquiryController::class, 'index']);
     Route::post('inquiries/{inquiry}/respond', [InquiryController::class, 'respond']);
+
+    Route::apiResource('/topics', TopicController::class)->names('topics');
 });
 
 require __DIR__ . '/auth.php';

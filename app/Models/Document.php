@@ -22,7 +22,8 @@ class Document extends Model
         'ai_summaries',
         'ai_voices',
         'chatbot_questions',
-        'categories',
+        'category',
+        'topics',
         'author',
         'uploaded_by',
         'file',
@@ -64,9 +65,9 @@ class Document extends Model
         return $this->hasMany(ChatbotQuestion::class);
     }
 
-    public function categories(): BelongsToMany
+    public function category(): BelongsTo
     {
-        return $this->belongsToMany(Category::class, 'document_categories');
+        return $this->belongsTo(Category::class);
     }
 
     public function author(): BelongsTo
@@ -102,5 +103,10 @@ class Document extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(DocumentLike::class);
+    }
+
+    public function topics(): BelongsToMany
+    {
+        return $this->belongsToMany(Topic::class, 'document_topics');
     }
 }

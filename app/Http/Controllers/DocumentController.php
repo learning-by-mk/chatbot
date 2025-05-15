@@ -25,6 +25,19 @@ class DocumentController extends Controller
         $load = $request->get('load', "");
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $allowFilter = Schema::getColumnListing('documents');
+        $allowFilter = array_merge($allowFilter, [
+            AllowedFilter::callback('search', function ($query, $value) {
+                $query->where('title', 'like', "%$value%")
+                    ->orWhere('description', 'like', "%$value%")
+                    ->orWhereHas('categories', function ($query) use ($value) {
+                        $query->where('name', 'like', "%$value%");
+                    })
+                    ->orWhereHas('author', function ($query) use ($value) {
+                        $query->where('name', 'like', "%$value%");
+                    });
+            }),
+        ]);
+
 
         $documents = QueryBuilder::for(Document::class)
             ->allowedFilters($allowFilter)
