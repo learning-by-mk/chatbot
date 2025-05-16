@@ -19,7 +19,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'Code',
                 'slug' => 'technology',
-                'href' => '/categories/technology',
             ],
             [
                 'name' => 'Kinh tế',
@@ -27,7 +26,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'LineChart',
                 'slug' => 'economics',
-                'href' => '/categories/economics',
             ],
             [
                 'name' => 'Khoa học',
@@ -35,7 +33,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'Brain',
                 'slug' => 'science',
-                'href' => '/categories/science',
             ],
             [
                 'name' => 'Giáo dục',
@@ -43,7 +40,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'GraduationCap',
                 'slug' => 'education',
-                'href' => '/categories/education',
             ],
             [
                 'name' => 'Văn học',
@@ -51,7 +47,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'Book',
                 'slug' => 'literature',
-                'href' => '/categories/literature',
             ],
             [
                 'name' => 'Luận văn',
@@ -59,7 +54,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'FileText',
                 'slug' => 'thesis',
-                'href' => '/categories/thesis',
             ],
             [
                 'name' => 'Doanh nghiệp',
@@ -67,7 +61,6 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'Building',
                 'slug' => 'business',
-                'href' => '/categories/business',
             ],
             [
                 'name' => 'Sáng tạo',
@@ -75,17 +68,12 @@ class CategorySeeder extends Seeder
                 'status' => 'active',
                 'icon' => 'Lightbulb',
                 'slug' => 'creativity',
-                'href' => '/categories/creativity',
             ],
         ];
 
         foreach ($categories as $category) {
-            Category::updateOrCreate(
-                [
-                    'slug' => $category['slug'],
-                ],
-                $category
-            );
+            $category = Category::updateOrCreate(['slug' => $category['slug']], $category);
+            $category->update(['href' => '/documents?filter[categories]=' . $category->id]);
         }
     }
 }
