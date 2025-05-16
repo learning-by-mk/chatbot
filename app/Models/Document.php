@@ -29,9 +29,6 @@ class Document extends Model
         'uploaded_by',
         'file',
         'likes',
-        'price',
-        'purchases',
-        'is_free'
     ];
 
     protected function casts()
@@ -61,17 +58,17 @@ class Document extends Model
         return $this->hasMany(Favorite::class);
     }
 
-    public function aiSummaries(): HasMany
+    public function ai_summaries(): HasMany
     {
         return $this->hasMany(AiSummary::class);
     }
 
-    public function aiVoices(): HasMany
+    public function ai_voices(): HasMany
     {
         return $this->hasMany(AiVoice::class);
     }
 
-    public function chatbotQuestions(): HasMany
+    public function chatbot_questions(): HasMany
     {
         return $this->hasMany(ChatbotQuestion::class);
     }
@@ -86,7 +83,7 @@ class Document extends Model
         return $this->belongsTo(User::class, 'author_id');
     }
 
-    public function uploadedBy(): BelongsTo
+    public function uploaded_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by_id');
     }
@@ -110,29 +107,6 @@ class Document extends Model
     {
         return $this->belongsTo(File::class, 'image_id');
     }
-
-    public function price(): HasOne
-    {
-        return $this->hasOne(DocumentPrice::class);
-    }
-
-    public function purchases(): HasMany
-    {
-        return $this->hasMany(DocumentPurchase::class);
-    }
-
-    public function isPurchased(User $user): bool
-    {
-        return $this->purchases()->where('user_id', $user->id)->exists();
-    }
-
-    public function isFree(): bool
-    {
-        /** @var DocumentPrice $price */
-        $price = $this->price;
-        return $price && $price->is_free;
-    }
-
 
     public function likes(): HasMany
     {

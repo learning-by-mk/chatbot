@@ -25,14 +25,6 @@ class AiSummaryController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StoreAiSummaryRequest $request)
@@ -51,14 +43,6 @@ class AiSummaryController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $aiSummary = $aiSummary->load($with_vals);
         return new AiSummaryResource($aiSummary);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(AiSummary $aiSummary)
-    {
-        //
     }
 
     /**

@@ -88,9 +88,6 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::get('/interaction/statistics', [InteractionController::class, 'get_interaction_statistics'])->name('interaction.statistics');
     Route::get('/interaction/data', [InteractionController::class, 'get_interaction_data'])->name('interaction.data');
-
-    Route::apiResource('/transactions', TransactionController::class)->names('transactions');
-    Route::apiResource('/document_purchases', DocumentPurchaseController::class)->names('document_purchases');
 });
 
 require __DIR__ . '/auth.php';
