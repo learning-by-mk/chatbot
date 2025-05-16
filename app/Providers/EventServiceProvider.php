@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Comment;
 use App\Models\Document;
+use App\Observers\CommentObserver;
 use App\Observers\DocumentObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -30,6 +32,7 @@ class EventServiceProvider extends ServiceProvider
     {
         // Đăng ký observers
         Document::observe(DocumentObserver::class);
+        Comment::observe(CommentObserver::class);
     }
 
     /**

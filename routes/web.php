@@ -18,6 +18,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\TopicController;
@@ -80,6 +81,9 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::apiResource('/topics', TopicController::class)->names('topics');
     Route::apiResource('/menus', MenuController::class)->names('menus');
+
+    Route::get('/interaction/statistics', [InteractionController::class, 'get_interaction_statistics'])->name('interaction.statistics');
+    Route::get('/interaction/data', [InteractionController::class, 'get_interaction_data'])->name('interaction.data');
 });
 
 require __DIR__ . '/auth.php';

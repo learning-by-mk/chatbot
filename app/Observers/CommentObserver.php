@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Comment;
+use Illuminate\Support\Facades\Log;
 
 class CommentObserver
 {
@@ -11,6 +12,7 @@ class CommentObserver
      */
     public function created(Comment $comment): void
     {
+        Log::info('Comment created', ['comment' => $comment]);
         $document = $comment->document;
         $document->average_rating = $document->ratings();
         $document->save();
@@ -21,6 +23,7 @@ class CommentObserver
      */
     public function updated(Comment $comment): void
     {
+        Log::info('Comment updated', ['comment' => $comment]);
         $document = $comment->document;
         $document->average_rating = $document->ratings();
         $document->save();
@@ -31,6 +34,7 @@ class CommentObserver
      */
     public function deleted(Comment $comment): void
     {
+        Log::info('Comment deleted', ['comment' => $comment]);
         $document = $comment->document;
         $document->average_rating = $document->ratings();
         $document->save();
