@@ -8,6 +8,7 @@ use App\Http\Resources\CommentResource;
 use App\Http\Resources\DocumentResource;
 use App\Models\Document;
 use App\Models\DocumentLike;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -120,9 +121,16 @@ class DocumentController extends Controller
             unset($data['is_draft']);
             $data['status'] = 'draft';
         }
+        if (isset($data['is_free']) && $data['is_free']) {
+            $data['price'] = 0;
+        }
         $data['slug'] = Str::slug($data['title']);
         $document = Document::create($data);
         $document->topics()->sync($data['topic_ids']);
+        $document->price()->create([
+            'price' => $data['price'] ?? 0,
+            'is_free' => $data['is_free'] ?? false
+        ]);
         return new DocumentResource($document);
     }
 
@@ -146,6 +154,21 @@ class DocumentController extends Controller
         $data['slug'] = Str::slug($data['title']);
         $document->update($data);
         $document->topics()->sync($data['topic_ids']);
+        if (isset($data['is_free']) && $data['is_free']) {
+            $data['price'] = 0;
+        }
+
+        if ($document->price) {
+            $document->price()->update([
+                'price' => $data['price'],
+                'is_free' => $data['is_free'] ?? false
+            ]);
+        } else {
+            $document->price()->create([
+                'price' => $data['price'],
+                'is_free' => $data['is_free'] ?? false
+            ]);
+        }
         $document->save();
         return new DocumentResource($document);
     }
@@ -255,6 +278,33 @@ class DocumentController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Document unliked successfully'
+        ]);
+    }
+
+    public function is_purchased(Document $document)
+    {
+        $is_purchased = $document->isPurchased(Auth::user());
+        return response()->json([
+            'data' => [
+                'is_purchased' => $is_purchased
+            ]
+        ]);
+    }
+
+    public function purchase(Request $request, Document $document)
+    {
+        $transaction = Transaction::create([
+            'user_id' => Auth::id(),
+            'amount' => $document->price->price,
+            'status' => 'pending',
+            'payment_method' => $request->get('payment_method', 'stripe')
+        ]);
+        $document->purchases()->create([
+            'user_id' => Auth::id(),
+            'transaction_id' => $transaction->id
+        ]);
+        return response()->json([
+            'message' => 'Document purchased successfully'
         ]);
     }
 }

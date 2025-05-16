@@ -16,12 +16,14 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
+use App\Http\Controllers\DocumentPurchaseController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InquiryController;
 use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ViewController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
@@ -60,6 +62,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('/documents/{document}/is_liked', [DocumentController::class, 'is_liked'])->name('documents.is_liked');
     Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('documents.like');
     Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('documents.unlike');
+    Route::get('/documents/{document}/is_purchased', [DocumentController::class, 'is_purchased'])->name('documents.is_purchased');
+    Route::post('/documents/{document}/purchase', [DocumentController::class, 'purchase'])->name('documents.purchase');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');
@@ -84,6 +88,9 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::get('/interaction/statistics', [InteractionController::class, 'get_interaction_statistics'])->name('interaction.statistics');
     Route::get('/interaction/data', [InteractionController::class, 'get_interaction_data'])->name('interaction.data');
+
+    Route::apiResource('/transactions', TransactionController::class)->names('transactions');
+    Route::apiResource('/document_purchases', DocumentPurchaseController::class)->names('document_purchases');
 });
 
 require __DIR__ . '/auth.php';

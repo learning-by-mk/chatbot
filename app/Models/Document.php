@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Document extends Model
 {
@@ -27,7 +28,10 @@ class Document extends Model
         'author',
         'uploaded_by',
         'file',
-        'likes'
+        'likes',
+        'price',
+        'purchases',
+        'is_free'
     ];
 
     protected function casts()
@@ -106,6 +110,29 @@ class Document extends Model
     {
         return $this->belongsTo(File::class, 'image_id');
     }
+
+    public function price(): HasOne
+    {
+        return $this->hasOne(DocumentPrice::class);
+    }
+
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(DocumentPurchase::class);
+    }
+
+    public function isPurchased(User $user): bool
+    {
+        return $this->purchases()->where('user_id', $user->id)->exists();
+    }
+
+    public function isFree(): bool
+    {
+        /** @var DocumentPrice $price */
+        $price = $this->price;
+        return $price && $price->is_free;
+    }
+
 
     public function likes(): HasMany
     {

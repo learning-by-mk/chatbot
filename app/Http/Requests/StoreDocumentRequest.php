@@ -40,6 +40,8 @@ class StoreDocumentRequest extends FormRequest
             'status' => 'nullable|in:pending,approved,rejected,draft',
             'content' => 'nullable|string',
             'is_draft' => 'nullable|boolean',
+            'is_free' => 'nullable|boolean',
+            'price' => 'required_if:is_free,false|numeric|min:0',
         ];
     }
 }
