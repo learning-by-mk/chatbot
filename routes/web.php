@@ -18,6 +18,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\AiVoiceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InquiryController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\ViewController;
@@ -78,6 +79,7 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::post('inquiries/{inquiry}/respond', [InquiryController::class, 'respond']);
 
     Route::apiResource('/topics', TopicController::class)->names('topics');
+    Route::apiResource('/menus', MenuController::class)->names('menus');
 });
 
 require __DIR__ . '/auth.php';
