@@ -258,4 +258,19 @@ class DocumentController extends Controller
             'message' => 'Document unliked successfully'
         ]);
     }
+
+    public function download(Request $request, Document $document)
+    {
+        if ($document->downloads()->where('user_id', Auth::id())->exists()) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Document already downloaded'
+            ], 200);
+        }
+        $document->downloads()->create(['user_id' => Auth::id()]);
+        return response()->json([
+            'status' => true,
+            'message' => 'Document downloaded successfully'
+        ], 200);
+    }
 }

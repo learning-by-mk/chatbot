@@ -62,8 +62,7 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('/documents/{document}/is_liked', [DocumentController::class, 'is_liked'])->name('documents.is_liked');
     Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('documents.like');
     Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('documents.unlike');
-    Route::get('/documents/{document}/is_purchased', [DocumentController::class, 'is_purchased'])->name('documents.is_purchased');
-    Route::post('/documents/{document}/purchase', [DocumentController::class, 'purchase'])->name('documents.purchase');
+    Route::post('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');
