@@ -213,9 +213,6 @@ class DocumentSeeder extends Seeder
             ], $document);
             $topic_ids = $topics->random(rand(1, 4))->pluck('id')->toArray();
             $document_model->topics()->sync($topic_ids);
-            $document_model->price()->firstOrCreate([
-                'price' => rand(10000, 100000),
-            ]);
         }
     }
 }

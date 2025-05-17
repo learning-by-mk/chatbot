@@ -15,7 +15,7 @@ class CommentSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        $documents = Document::all();
+        $documents = Document::where('status', 'approved')->get();
 
         $comments = [
             'Tài liệu rất hữu ích, cảm ơn tác giả nhiều!',

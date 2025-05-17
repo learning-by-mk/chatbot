@@ -15,7 +15,7 @@ class DownloadSeeder extends Seeder
     public function run(): void
     {
         $users = User::all();
-        $documents = Document::all();
+        $documents = Document::where('status', 'approved')->get();
 
         // Đảm bảo không trùng lặp các cặp user-document
         $userDocumentPairs = [];
