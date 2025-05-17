@@ -11,8 +11,8 @@ class InquiryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'subject' => $this->subject,
-            'content' => $this->content,
+            'topic' => $this->topic,
+            'message' => $this->message,
             'status' => $this->status,
             'admin_response' => $this->admin_response,
             'created_at' => $this->created_at,

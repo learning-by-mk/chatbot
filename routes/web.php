@@ -75,8 +75,9 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::apiResource('/ratings', RatingController::class)->names('ratings');
 
     Route::get('user/inquiries', [InquiryController::class, 'userInquiries']);
-    Route::post('inquiries', [InquiryController::class, 'store']);
-    Route::get('inquiries/{inquiry}', [InquiryController::class, 'show']);
+    // Route::post('inquiries', [InquiryController::class, 'store']);
+    // Route::get('inquiries/{inquiry}', [InquiryController::class, 'show']);
+    Route::apiResource('/inquiries', InquiryController::class)->names('inquiries');
 
     // Route cho admin
     Route::get('admin/inquiries', [InquiryController::class, 'index']);

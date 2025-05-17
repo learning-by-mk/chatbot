@@ -51,6 +51,14 @@ class InquiryController extends Controller
         return new InquiryResource($inquiry);
     }
 
+    public function update(UpdateInquiryRequest $request, Inquiry $inquiry)
+    {
+        $data = $request->validated();
+        $inquiry->update($data);
+
+        return new InquiryResource($inquiry);
+    }
+
     public function show(Request $request, Inquiry $inquiry)
     {
         // $this->authorize('view', $inquiry);

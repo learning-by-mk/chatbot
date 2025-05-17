@@ -23,7 +23,7 @@ class UpdateInquiryRequest extends FormRequest
     {
         return [
             'admin_response' => ['required', 'string'],
-            'status' => ['required', 'in:in_progress,resolved,rejected'],
+            'status' => ['required', 'in:pending,in_progress,resolved,rejected'],
         ];
     }
 }

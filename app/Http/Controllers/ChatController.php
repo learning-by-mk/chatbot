@@ -235,7 +235,7 @@ class ChatController extends Controller
         $file = $document->file;
         $path = Storage::disk('public')->path($file->path);
         $content = $this->extractFileContent($path, $file->ext);
-        $audioPath = $this->convertToSpeechWithOpenAi($content);
+        $audioPath = $this->convertToSpeechWithGemini($content);
 
         return [
             'status' => true,
@@ -299,11 +299,10 @@ class ChatController extends Controller
         }
     }
 
-    private function convertToSpeechWithOpenAi($text)
+    private function convertToSpeechWithGemini($text)
     {
-        // $url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=" . env('GEMINI_API_KEY');
+        $url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=" . env('GEMINI_API_KEY');
 
-        // $prompt = "Chuyển đổi văn bản sau thành giọng nói: " . $text;
         $prompt = [
             'model' => 'tts-1',
             'voice' => 'alloy',
