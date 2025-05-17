@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -20,8 +21,8 @@ class Document extends Model
         'ratings',
         'downloads',
         'favorites',
-        'ai_summaries',
-        'ai_voices',
+        'ai_summary',
+        'ai_voice',
         'chatbot_questions',
         'category',
         'topics',
@@ -58,19 +59,19 @@ class Document extends Model
         return $this->hasMany(Favorite::class);
     }
 
-    public function ai_summaries(): HasMany
+    public function ai_summary(): HasOne
     {
-        return $this->hasMany(AiSummary::class);
+        return $this->hasOne(AiSummary::class);
     }
 
-    public function ai_voices(): HasMany
+    public function ai_voice(): HasOne
     {
-        return $this->hasMany(AiVoice::class);
+        return $this->hasOne(AiVoice::class);
     }
 
-    public function chatbot_questions(): HasMany
+    public function chat()
     {
-        return $this->hasMany(ChatbotQuestion::class);
+        return $this->hasMany(Chat::class)->where('user_id', Auth::id())->first();
     }
 
     public function category(): BelongsTo

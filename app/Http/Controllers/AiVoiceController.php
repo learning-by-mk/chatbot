@@ -6,7 +6,9 @@ use App\Http\Requests\StoreAiVoiceRequest;
 use App\Http\Requests\UpdateAiVoiceRequest;
 use App\Http\Resources\AiVoiceResource;
 use App\Models\AiVoice;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class AiVoiceController extends Controller
@@ -37,7 +39,14 @@ class AiVoiceController extends Controller
      */
     public function store(StoreAiVoiceRequest $request)
     {
-        $data = $request->validated();
+        $data = $request->all();
+        $chat_controller = new ChatController();
+        $document = Document::find($data['document_id']);
+        $response = $chat_controller->convertToSpeech($request, $document);
+        $audioPath = $response['audio_path'];
+        $data['url'] = $audioPath;
+        $data['absolute_path'] = Storage::disk('public')->path($audioPath);
+        $data['audio_path'] = $audioPath;
         $aiVoice = AiVoice::create($data);
         return new AiVoiceResource($aiVoice);
     }

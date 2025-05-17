@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Chat;
-use App\Models\ChatbotQuestion;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;

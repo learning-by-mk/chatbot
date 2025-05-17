@@ -17,7 +17,7 @@ class AiSummaryResource extends JsonResource
         return [
             'id' => $this->id,
             'document_id' => $this->document_id,
-            'content' => $this->content,
+            'summary' => $this->summary,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),

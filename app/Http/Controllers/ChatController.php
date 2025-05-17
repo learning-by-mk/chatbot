@@ -6,14 +6,32 @@ use App\Http\Requests\StoreChatRequest;
 use App\Http\Requests\UpdateChatRequest;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
+use App\Models\Document;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use OpenAI;
+use PhpOffice\PhpWord\IOFactory;
+use Spatie\PdfToText\Pdf;
 
 class ChatController extends Controller
 {
+    private $client;
+    private $geminiApiKey;
+    private $openai;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+        $this->geminiApiKey = env('GEMINI_API_KEY');
+        $this->openai = OpenAI::client(env('OPENAI_API_KEY'));
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -118,12 +136,19 @@ class ChatController extends Controller
         return new ChatResource($chat);
     }
 
-    public function chatApi(Request $request, ?Chat $chat = null)
+    public function chatApi(Request $request, string $chat_id)
     {
+        $chat = Chat::find($chat_id);
         $request->validate([
+            'document_id' => 'required|exists:documents,id',
             'message' => 'required|string',
             'file' => 'nullable|file|mimes:pdf,txt,docx,doc,jpg,png,jpeg,gif,svg,webp',
         ]);
+
+        $document = Document::find($request->document_id);
+        $file = $document->file;
+        $path = Storage::disk('public')->path($file->path);
+        $content = $this->extractFileContent($path, $file->ext);
 
         if (!$chat) {
             $uuid = Str::uuid();
@@ -131,10 +156,15 @@ class ChatController extends Controller
                 'user_id' => Auth::id(),
                 'title' => $request->message,
                 'uuid' => $uuid,
+                'document_id' => $request->document_id,
                 'messages' => [
                     [
                         'role' => 'system',
                         'content' => 'You are a helpful assistant.',
+                    ],
+                    [
+                        'role' => 'system',
+                        'content' => 'Here is the content of the document: ' . $content,
                     ],
                 ],
             ]);
@@ -184,5 +214,112 @@ class ChatController extends Controller
 
         return ['messages' => $messages, 'chat' => $chat];
         // return response()->json($response->json());
+    }
+
+    public function summary(Request $request, Document $document)
+    {
+        $file = $document->file;
+        $path = Storage::disk('public')->path($file->path);
+        $content = $this->extractFileContent($path, $file->ext);
+        $summary = $this->summarizeWithGemini($content);
+
+        return [
+            'status' => true,
+            'message' => 'Tóm tắt tài liệu thành công',
+            'summary' => $summary,
+        ];
+    }
+
+    public function convertToSpeech(Request $request, Document $document)
+    {
+        $file = $document->file;
+        $path = Storage::disk('public')->path($file->path);
+        $content = $this->extractFileContent($path, $file->ext);
+        $audioPath = $this->convertToSpeechWithOpenAi($content);
+
+        return [
+            'status' => true,
+            'message' => 'Chuyển đổi thành công',
+            'audio_path' => $audioPath,
+        ];
+    }
+
+    private function extractFileContent($filePath, $extension)
+    {
+        switch (strtolower($extension)) {
+            case 'txt':
+                return file_get_contents($filePath);
+
+            case 'pdf':
+                return Pdf::getText($filePath); // Yêu cầu pdftotext đã cài
+
+            case 'docx':
+                /**
+                 * @var \PhpOffice\PhpWord\Document $phpWord
+                 */
+                $phpWord = IOFactory::load($filePath);
+                $text = '';
+                foreach ($phpWord->getSections() as $section) {
+                    foreach ($section->getElements() as $element) {
+                        if (method_exists($element, 'getText')) {
+                            $text .= $element->getText() . "\n";
+                        }
+                    }
+                }
+                return $text;
+
+            default:
+                throw new \Exception('Định dạng file không được hỗ trợ.');
+        }
+    }
+
+    private function summarizeWithGemini($content)
+    {
+        $url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" . $this->geminiApiKey;
+
+        $prompt = "Tóm tắt nội dung sau thành 5-10 câu, tập trung vào các ý chính:\n" . $content;
+
+        try {
+            $response = $this->client->post($url, [
+                'json' => [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $prompt],
+                            ],
+                        ],
+                    ],
+                ],
+            ]);
+
+            $data = json_decode($response->getBody(), true);
+            return $data['candidates'][0]['content']['parts'][0]['text'] ?? 'Không thể tóm tắt.';
+        } catch (\Exception $e) {
+            throw new \Exception('Lỗi khi gọi Gemini API: ' . $e->getMessage());
+        }
+    }
+
+    private function convertToSpeechWithOpenAi($text)
+    {
+        // $url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=" . env('GEMINI_API_KEY');
+
+        // $prompt = "Chuyển đổi văn bản sau thành giọng nói: " . $text;
+        $prompt = [
+            'model' => 'tts-1',
+            'voice' => 'alloy',
+            'input' => $text,
+            'response_format' => 'mp3'
+        ];
+
+        try {
+            $response = $this->openai->audio()->speech($prompt);
+
+            $filename = 'tts_' . time() . Str::uuid() . '.mp3';
+            Storage::disk('public')->put($filename, $response);
+            return $filename;
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi gọi Gemini API (text-to-speech): ' . $e->getMessage());
+            throw new \Exception('Lỗi khi gọi Gemini API: ' . $e->getMessage());
+        }
     }
 }

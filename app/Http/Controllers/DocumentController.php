@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAiSummaryRequest;
+use App\Http\Requests\StoreAiVoiceRequest;
 use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\DocumentResource;
+use App\Http\Resources\ChatResource;
+use App\Models\Chat;
 use App\Models\Document;
 use App\Models\DocumentLike;
 use App\Models\Transaction;
@@ -271,6 +275,50 @@ class DocumentController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Document downloaded successfully'
+        ], 200);
+    }
+
+    public function ai_summary(Request $request, Document $document)
+    {
+        $data = $request->all();
+        $ai_summary_request = StoreAiSummaryRequest::create(route('ai-summaries.store', [
+            'document_id' => $document->id
+        ]), 'POST', $data);
+
+        $ai_summary_controller = new AiSummaryController();
+        $ai_summary_controller->store($ai_summary_request);
+        return response()->json([
+            'status' => true,
+            'message' => 'Document ai summary created successfully'
+        ], 200);
+    }
+
+    public function ai_voice(Request $request, Document $document)
+    {
+        $data = $request->all();
+        $ai_voice_request = StoreAiVoiceRequest::create(route('ai-voices.store', [
+            'document_id' => $document->id
+        ]), 'POST', $data);
+
+        $ai_voice_controller = new AiVoiceController();
+        $ai_voice_controller->store($ai_voice_request);
+        return response()->json([
+            'status' => true,
+            'message' => 'Document ai voice created successfully'
+        ], 200);
+    }
+
+    public function chat(Request $request, Document $document)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $chat = $document->chat();
+        if ($chat instanceof Chat) {
+            $chat = $chat->load($with_vals);
+            return new ChatResource($chat);
+        }
+        return response()->json([
+            'data' => []
         ], 200);
     }
 }

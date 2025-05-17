@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\AiSummaryController;
-use App\Http\Controllers\ChatbotQuestionController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\DownloadController;
@@ -26,8 +25,7 @@ use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ViewController;
 
-Route::middleware(['api', 'auth:sanctum'])->prefix('api/chat')->group(function () {
-    // Route::get('/{uuid?}', [ChatController::class, 'chat'])->name('chat.chat');
+Route::middleware(['api', 'auth:sanctum'])->prefix('api/chats')->group(function () {
     Route::post('/', [ChatController::class, 'store'])->name('chat.store');
     Route::post('/{chat_id}/message', [ChatController::class, 'chatApi'])->name('chat.message');
 });
@@ -45,7 +43,6 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::apiResource('/setting-groups', SettingGroupController::class)->names('setting-groups');
     Route::apiResource('/roles', RoleController::class)->names('roles');
     Route::apiResource('/ai-summaries', AiSummaryController::class)->names('ai-summaries');
-    Route::apiResource('/chatbot-questions', ChatbotQuestionController::class)->names('chatbot-questions');
     Route::apiResource('/chats', ChatController::class)->names('chats');
     Route::apiResource('/favorites', FavoriteController::class)->names('favorites');
     Route::apiResource('/downloads', DownloadController::class)->names('downloads');
@@ -63,6 +60,9 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::post('/documents/{document}/like', [DocumentController::class, 'like'])->name('documents.like');
     Route::delete('/documents/{document}/unlike', [DocumentController::class, 'unlike'])->name('documents.unlike');
     Route::post('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::post('/documents/{document}/ai-summary', [DocumentController::class, 'ai_summary'])->name('documents.ai_summary');
+    Route::post('/documents/{document}/ai-voice', [DocumentController::class, 'ai_voice'])->name('documents.ai_voice');
+    Route::get('/documents/{document}/chat', [DocumentController::class, 'chat'])->name('documents.chat');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');

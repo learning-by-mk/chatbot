@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAiSummaryRequest;
 use App\Http\Requests\UpdateAiSummaryRequest;
 use App\Http\Resources\AiSummaryResource;
 use App\Models\AiSummary;
+use App\Models\Document;
 use Illuminate\Http\Request;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -29,8 +30,16 @@ class AiSummaryController extends Controller
      */
     public function store(StoreAiSummaryRequest $request)
     {
-        $data = $request->validated();
-        $aiSummary = AiSummary::create($data);
+        $data = $request->all();
+        $chat_controller = new ChatController();
+        $document = Document::find($data['document_id']);
+        $response = $chat_controller->summary($request, $document);
+        $summary = $response['summary'];
+
+        $aiSummary = AiSummary::create([
+            'document_id' => $data['document_id'],
+            'summary' => $summary,
+        ]);
         return new AiSummaryResource($aiSummary);
     }
 
