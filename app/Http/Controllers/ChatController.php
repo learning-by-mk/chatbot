@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateChatRequest;
 use App\Http\Resources\ChatResource;
 use App\Models\Chat;
 use App\Models\Document;
+use Google\Cloud\TextToSpeech\V1\Client\TextToSpeechClient;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -301,20 +302,29 @@ class ChatController extends Controller
 
     private function convertToSpeechWithGemini($text)
     {
-        $url = "https://texttospeech.googleapis.com/v1/text:synthesize?key=" . env('GEMINI_API_KEY');
-
-        $prompt = [
-            'model' => 'tts-1',
-            'voice' => 'alloy',
-            'input' => $text,
-            'response_format' => 'mp3'
-        ];
-
         try {
-            $response = $this->openai->audio()->speech($prompt);
+            $client = new TextToSpeechClient();
+            $request = new \Google\Cloud\TextToSpeech\V1\SynthesizeSpeechRequest();
+
+            $synthesisInput = new \Google\Cloud\TextToSpeech\V1\SynthesisInput();
+            $synthesisInput->setText($text);
+            $request->setInput($synthesisInput);
+
+            $voice = new \Google\Cloud\TextToSpeech\V1\VoiceSelectionParams();
+            $voice->setLanguageCode('vi-VN');
+            $voice->setName('vi-VN-Standard-A');
+            $request->setVoice($voice);
+
+            $audioConfig = new \Google\Cloud\TextToSpeech\V1\AudioConfig();
+            $audioConfig->setAudioEncoding(\Google\Cloud\TextToSpeech\V1\AudioEncoding::MP3);
+            $request->setAudioConfig($audioConfig);
+
+            $response = $client->synthesizeSpeech($request);
+            $audioContent = $response->getAudioContent();
 
             $filename = 'tts_' . time() . Str::uuid() . '.mp3';
-            Storage::disk('public')->put($filename, $response);
+            Storage::disk('public')->put('audio/' . $filename, $audioContent);
+            // Storage::disk('public')->store('audio', $filename, $audioContent);
             return $filename;
         } catch (\Exception $e) {
             Log::error('Lỗi khi gọi Gemini API (text-to-speech): ' . $e->getMessage());

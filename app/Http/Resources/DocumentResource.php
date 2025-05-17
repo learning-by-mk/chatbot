@@ -39,7 +39,7 @@ class DocumentResource extends JsonResource
             'favorites' => $this->whenLoaded('favorites', fn() => FavoriteResource::collection($this->favorites), []),
             'ai_summary' => $this->whenLoaded('ai_summary', fn() => new AiSummaryResource($this->ai_summary)),
             'ai_voice' => $this->whenLoaded('ai_voice', fn() => new AiVoiceResource($this->ai_voice)),
-            'chat' => $this->whenLoaded('chat', fn() => ChatResource::collection($this->chat), []),
+            'chat' => $this->whenLoaded('chat', fn() => ChatResource::collection($this->chat)),
             'category' => $this->whenLoaded('category', fn() => new CategoryResource($this->category)),
             'topics' => $this->whenLoaded('topics', fn() => TopicResource::collection($this->topics), []),
             'author' => $this->whenLoaded('author', fn() => new UserResource($this->author)),

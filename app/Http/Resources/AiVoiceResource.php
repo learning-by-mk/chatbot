@@ -18,6 +18,8 @@ class AiVoiceResource extends JsonResource
             'id' => $this->id,
             'document_id' => $this->document_id,
             'audio_path' => $this->audio_path,
+            'absolute_path' => $this->absolute_path,
+            'url' => $this->url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'document' => $this->whenLoaded('document', fn($document) => new DocumentResource($document)),

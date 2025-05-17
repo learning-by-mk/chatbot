@@ -44,8 +44,8 @@ class AiVoiceController extends Controller
         $document = Document::find($data['document_id']);
         $response = $chat_controller->convertToSpeech($request, $document);
         $audioPath = $response['audio_path'];
-        $data['url'] = $audioPath;
-        $data['absolute_path'] = Storage::disk('public')->path($audioPath);
+        $data['url'] = Storage::url('audio/' . $audioPath);
+        $data['absolute_path'] = env('APP_URL') . Storage::url('audio/' . $audioPath);
         $data['audio_path'] = $audioPath;
         $aiVoice = AiVoice::create($data);
         return new AiVoiceResource($aiVoice);

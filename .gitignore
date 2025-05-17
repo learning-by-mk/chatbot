@@ -22,3 +22,5 @@ yarn-error.log
 /.zed
 
 /.cursor
+
+/storage/google-credentials.json
