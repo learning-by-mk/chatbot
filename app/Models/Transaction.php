@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $guarded = [];
+    protected $guarded = ['user', 'point_package'];
 
     public function user()
     {
@@ -16,5 +16,10 @@ class Transaction extends Model
     public function documentPurchases()
     {
         return $this->hasMany(DocumentPurchase::class);
+    }
+
+    public function point_package()
+    {
+        return $this->belongsTo(PointPackage::class);
     }
 }

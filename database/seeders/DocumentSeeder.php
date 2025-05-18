@@ -15,7 +15,7 @@ class DocumentSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::all();
+        $users = User::whereHas('authorProfile')->get();
         $categories = Category::all();
         $topics = Topic::all();
 
@@ -214,7 +214,8 @@ class DocumentSeeder extends Seeder
             $topic_ids = $topics->random(rand(1, 4))->pluck('id')->toArray();
             $document_model->topics()->sync($topic_ids);
             $document_model->price()->firstOrCreate([
-                'price' => rand(10000, 100000),
+                'price' => rand(0, 1000),
+                'points' => rand(0, 1000),
             ]);
         }
     }

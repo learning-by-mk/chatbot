@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Http\Resources\TransactionResource;
+use App\Models\PointPackage;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -34,7 +35,11 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request)
     {
         $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
+        $user = $request->user();
+        $data['user_id'] = $user->id;
+        $data['status'] = 'completed';
+        $pointPackage = PointPackage::find($data['point_package_id']);
+        $user->deposit($pointPackage);
         $transaction = Transaction::create($data);
         return new TransactionResource($transaction);
     }

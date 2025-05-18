@@ -26,6 +26,8 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\AuthorProfileController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PointPackageController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chats')->group(function () {
     Route::post('/', [ChatController::class, 'store'])->name('chat.store');
@@ -67,6 +69,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('/documents/{document}/chat', [DocumentController::class, 'chat'])->name('documents.chat');
     Route::get('/documents/{document}/is_purchased', [DocumentController::class, 'is_purchased'])->name('documents.is_purchased');
     Route::post('/documents/{document}/purchase', [DocumentController::class, 'purchase'])->name('documents.purchase');
+    Route::get('/documents/top_documents/show', [DocumentController::class, 'top_documents'])->name('documents.top_documents');
+    Route::get('/documents/new_documents/show', [DocumentController::class, 'new_documents'])->name('documents.new_documents');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');
@@ -102,6 +106,19 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::apiResource('/transactions', TransactionController::class)->names('transactions');
     Route::apiResource('/document_purchases', DocumentPurchaseController::class)->names('document_purchases');
+
+    Route::apiResource('/point_packages', PointPackageController::class)->names('point_packages');
+});
+
+// PayPal routes
+Route::prefix('payment')->group(function () {
+    Route::post('/create', [PaymentController::class, 'createPayment'])->name('payment.create');
+    Route::get('/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/cancel', [PaymentController::class, 'paymentCancel'])->name('payment.cancel');
+
+    // Trang hoàn thành và trang lỗi
+    Route::view('/completed', 'payments.completed')->name('payment.completed');
+    Route::view('/failed', 'payments.failed')->name('payment.failed');
 });
 
 require __DIR__ . '/auth.php';

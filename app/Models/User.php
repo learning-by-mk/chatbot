@@ -105,6 +105,12 @@ class User extends Authenticatable
         return $this->hasMany(Inquiry::class, 'responded_by_id');
     }
 
+    public function deposit(PointPackage $pointPackage)
+    {
+        $this->points += $pointPackage->points;
+        $this->save();
+    }
+
     public function statistics()
     {
         $totalUsers = User::count();

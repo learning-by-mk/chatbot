@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTransactionRequest extends FormRequest
+class UpdatePointPackageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,10 +22,7 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|string|in:stripe,paypal,bank_transfer',
-            // 'status' => 'required|string|in:pending,completed,failed',
-            'point_package_id' => 'required|exists:point_packages,id',
+            //
         ];
     }
 }

@@ -291,6 +291,18 @@ class DocumentController extends Controller
 
     public function download(Request $request, Document $document)
     {
+        if ($document->isFree()) {
+            $document->downloads()->create(['user_id' => Auth::id()]);
+            return response()->json([
+                'status' => true,
+                'message' => 'Document downloaded successfully'
+            ], 200);
+        }
+        /** @var User $user */
+        $user = Auth::user();
+        $user->points -= $document->price->points;
+        $user->save();
+
         if ($document->downloads()->where('user_id', Auth::id())->exists()) {
             return response()->json([
                 'status' => true,
@@ -373,5 +385,34 @@ class DocumentController extends Controller
         return response()->json([
             'message' => 'Document purchased successfully'
         ]);
+    }
+
+    public function top_documents(Request $request)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $limit = $request->get('limit', 4);
+        $allowFilter = Schema::getColumnListing('documents');
+
+        $resource = QueryBuilder::for(Document::class)
+            ->allowedFilters($allowFilter)
+            ->orderBy('average_rating', 'desc')
+            ->with($with_vals)
+            ->paginate($limit, ['*'], 'page', 1);
+        return DocumentResource::collection($resource);
+    }
+
+    public function new_documents(Request $request)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $limit = $request->get('limit', 4);
+        $allowFilter = Schema::getColumnListing('documents');
+        $resource = QueryBuilder::for(Document::class)
+            ->allowedFilters($allowFilter)
+            ->orderBy('publish_date', 'desc')
+            ->with($with_vals)
+            ->paginate($limit, ['*'], 'page', 1);
+        return DocumentResource::collection($resource);
     }
 }

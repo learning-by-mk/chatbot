@@ -2,11 +2,10 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\PointPackageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TransactionResource extends JsonResource
+class PointPackageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +14,6 @@ class TransactionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
-            ...parent::toArray($request),
-            'point_package' => $this->whenLoaded('point_package', fn() => new PointPackageResource($this->point_package)),
-        ];
+        return parent::toArray($request);
     }
 }
