@@ -14,6 +14,12 @@ class DownloadObserver
     {
         Log::info('DownloadObserver created');
         try {
+            $document = $download->document;
+            $author = $document->author;
+            $profile = $author->author_profile;
+            $profile->total_downloads += 1;
+            $profile->save();
+
             $author = $download->document->author;
             $is_have_history_point = $author->historyPoints()->where('document_id', $download->document_id)->where('type', 'download')->exists();
             Log::info('is_have_history_point', ['is_have_history_point' => $is_have_history_point]);

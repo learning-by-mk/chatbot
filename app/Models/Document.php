@@ -49,14 +49,19 @@ class Document extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function ratings()
+    // public function ratings()
+    // {
+    //     $comments = $this->comments()->whereNull('parent_id')->get();
+    //     $ratings = 0;
+    //     foreach ($comments as $comment) {
+    //         $ratings += $comment->score;
+    //     }
+    //     return round($ratings / ($comments->count() || 1), 1);
+    // }
+
+    public function ratings(): HasMany
     {
-        $comments = $this->comments()->whereNull('parent_id')->get();
-        $ratings = 0;
-        foreach ($comments as $comment) {
-            $ratings += $comment->score;
-        }
-        return round($ratings / ($comments->count() || 1), 1);
+        return $this->hasMany(Rating::class);
     }
 
     public function favorites(): HasMany

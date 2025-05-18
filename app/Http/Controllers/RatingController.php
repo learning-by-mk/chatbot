@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateRatingRequest;
 use App\Http\Resources\RatingResource;
 use App\Models\Rating;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class RatingController extends Controller
@@ -30,6 +31,7 @@ class RatingController extends Controller
     public function store(StoreRatingRequest $request)
     {
         $data = $request->validated();
+        $data['user_id'] = Auth::id();
         $rating = Rating::create($data);
         return new RatingResource($rating);
     }
@@ -43,14 +45,6 @@ class RatingController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $rating = $rating->load($with_vals);
         return new RatingResource($rating);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Rating $rating)
-    {
-        //
     }
 
     /**

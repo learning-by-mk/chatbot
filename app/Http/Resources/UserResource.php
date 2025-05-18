@@ -45,6 +45,7 @@ class UserResource extends JsonResource
             'document_count' => $this->documents()->count(),
             'total_downloads' => $totalDownloads,
             'average_rating' => $averageRating,
+            'author_profile' => $this->whenLoaded('author_profile', fn() => new AuthorProfileResource($this->author_profile)),
         ];
     }
 }

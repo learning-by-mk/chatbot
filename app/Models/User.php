@@ -80,7 +80,7 @@ class User extends Authenticatable
         return $this->hasMany(Document::class, 'author_id');
     }
 
-    public function authorProfile(): HasOne
+    public function author_profile(): HasOne
     {
         return $this->hasOne(AuthorProfile::class);
     }

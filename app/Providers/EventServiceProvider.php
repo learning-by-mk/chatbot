@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Comment;
 use App\Models\Document;
+use App\Models\DocumentLike;
 use App\Models\DocumentPurchase;
 use App\Observers\CommentObserver;
 use App\Observers\DocumentObserver;
@@ -12,6 +13,7 @@ use App\Models\Download;
 use App\Models\Transaction;
 use App\Observers\TransactionObserver;
 use App\Observers\DocumentPurchaseObserver;
+use App\Observers\LikeObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -42,6 +44,7 @@ class EventServiceProvider extends ServiceProvider
         Download::observe(DownloadObserver::class);
         Transaction::observe(TransactionObserver::class);
         DocumentPurchase::observe(DocumentPurchaseObserver::class);
+        DocumentLike::observe(LikeObserver::class);
     }
 
     /**

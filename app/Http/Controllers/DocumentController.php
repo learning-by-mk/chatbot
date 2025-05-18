@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateDocumentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\DocumentResource;
 use App\Http\Resources\ChatResource;
+use App\Http\Resources\RatingResource;
 use App\Models\Chat;
 use App\Models\Document;
 use App\Models\DocumentLike;
@@ -407,5 +408,23 @@ class DocumentController extends Controller
             ->with($with_vals)
             ->paginate($limit, ['*'], 'page', 1);
         return DocumentResource::collection($resource);
+    }
+
+    public function ratings(Request $request, Document $document)
+    {
+        $load = $request->get('load', "");
+        $with_vals = array_filter(array_map('trim', explode(',', $load)));
+        $ratings = $document->ratings()->with($with_vals)->paginate(1000, ['*'], 'page', 1);
+        return RatingResource::collection($ratings);
+    }
+
+    public function is_rated(Document $document)
+    {
+        $is_rated = $document->ratings()->where('user_id', Auth::id())->exists();
+        return response()->json([
+            'data' => [
+                'is_rated' => $is_rated
+            ]
+        ]);
     }
 }

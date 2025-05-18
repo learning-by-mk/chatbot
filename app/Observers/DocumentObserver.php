@@ -18,7 +18,10 @@ class DocumentObserver
     public function updated(Document $document): void
     {
         Log::debug("Observer: Document updated event fired", ['id' => $document->id, 'status' => $document->status]);
-
+        $author = $document->author;
+        $profile = $author->author_profile;
+        $profile->total_documents += 1;
+        $profile->save();
         $status = is_object($document->status) ? $document->status->value : $document->status;
 
         if ($status === 'approved') {

@@ -26,6 +26,8 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\PublisherController;
 use App\Http\Controllers\AuthorProfileController;
+use App\Http\Controllers\DocumentPriceController;
+use App\Http\Controllers\HistoryPointController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\PointPackageController;
 
@@ -43,6 +45,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::delete('/users/documents/{document}', [UserController::class, 'destroy_document'])->name('users.destroy_document');
     Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('users.statistics');
     Route::get('/users/history_points/show', [UserController::class, 'history_points'])->name('users.history_points');
+
+    Route::apiResource('history_points', HistoryPointController::class)->names('history_points');
 
     Route::apiResource('/settings', SettingController::class)->names('settings');
     Route::apiResource('/setting-groups', SettingGroupController::class)->names('setting-groups');
@@ -72,6 +76,10 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::post('/documents/{document}/purchase', [DocumentController::class, 'purchase'])->name('documents.purchase');
     Route::get('/documents/top_documents/show', [DocumentController::class, 'top_documents'])->name('documents.top_documents');
     Route::get('/documents/new_documents/show', [DocumentController::class, 'new_documents'])->name('documents.new_documents');
+    Route::get('/documents/{document}/ratings', [DocumentController::class, 'ratings'])->name('documents.ratings');
+    Route::get('/documents/{document}/is_rated', [DocumentController::class, 'is_rated'])->name('documents.is_rated');
+
+    Route::apiResource('document_prices', DocumentPriceController::class)->names('document_prices');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');
