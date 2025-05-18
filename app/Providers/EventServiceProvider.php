@@ -4,8 +4,14 @@ namespace App\Providers;
 
 use App\Models\Comment;
 use App\Models\Document;
+use App\Models\DocumentPurchase;
 use App\Observers\CommentObserver;
 use App\Observers\DocumentObserver;
+use App\Observers\DownloadObserver;
+use App\Models\Download;
+use App\Models\Transaction;
+use App\Observers\TransactionObserver;
+use App\Observers\DocumentPurchaseObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -33,6 +39,9 @@ class EventServiceProvider extends ServiceProvider
         // Đăng ký observers
         Document::observe(DocumentObserver::class);
         Comment::observe(CommentObserver::class);
+        Download::observe(DownloadObserver::class);
+        Transaction::observe(TransactionObserver::class);
+        DocumentPurchase::observe(DocumentPurchaseObserver::class);
     }
 
     /**

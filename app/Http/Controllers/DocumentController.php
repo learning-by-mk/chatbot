@@ -133,8 +133,8 @@ class DocumentController extends Controller
         $document = Document::create($data);
         $document->topics()->sync($data['topic_ids']);
         $document->price()->create([
-            'price' => $data['price'] ?? 0,
-            'is_free' => $data['is_free'] ?? false
+            'price' => 0,
+            'points' => $data['points'] ?? 0
         ]);
         return new DocumentResource($document);
     }
@@ -162,21 +162,18 @@ class DocumentController extends Controller
         $data['slug'] = Str::slug($data['title']);
         $document->update($data);
         $document->topics()->sync($data['topic_ids']);
-        if (isset($data['is_free']) && $data['is_free']) {
-            $data['price'] = 0;
-        }
-
         if ($document->price) {
             $document->price()->update([
-                'price' => $data['price'],
-                'is_free' => $data['is_free'] ?? false
+                'price' => 0,
+                'points' => $data['points']
             ]);
         } else {
             $document->price()->create([
-                'price' => $data['price'],
-                'is_free' => $data['is_free'] ?? false
+                'price' => 0,
+                'points' => $data['points']
             ]);
         }
+
         $document->save();
         return new DocumentResource($document);
     }
@@ -298,10 +295,6 @@ class DocumentController extends Controller
                 'message' => 'Document downloaded successfully'
             ], 200);
         }
-        /** @var User $user */
-        $user = Auth::user();
-        $user->points -= $document->price->points;
-        $user->save();
 
         if ($document->downloads()->where('user_id', Auth::id())->exists()) {
             return response()->json([

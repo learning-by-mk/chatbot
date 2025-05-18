@@ -52,7 +52,6 @@ class DocumentResource extends JsonResource
             'price' => $this->whenLoaded('price', fn() => new DocumentPriceResource($this->price)),
             'purchases' => $this->whenLoaded('purchases', fn() => DocumentPurchaseResource::collection($this->purchases), []),
             'is_purchased' => $this->isPurchased($request->user()),
-            'is_free' => $this->isFree(),
         ];
     }
 }

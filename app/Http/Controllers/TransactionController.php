@@ -26,6 +26,8 @@ class TransactionController extends Controller
             ->allowedFilters($allowFilter)
             ->with($with_vals)
             ->paginate(1000, ['*'], 'page', 1);
+
+        $transactions = $transactions->where('user_id', $request->user()->id);
         return TransactionResource::collection($transactions);
     }
 

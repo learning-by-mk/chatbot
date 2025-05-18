@@ -11,7 +11,7 @@ class StoreRatingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreRatingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'document_id' => 'required|exists:documents,id',
+            'score' => 'required|integer|min:1|max:5',
         ];
     }
 }

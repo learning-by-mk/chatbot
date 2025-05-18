@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\DocumentResource;
+use App\Http\Resources\HistoryPointResource;
 use App\Http\Resources\UserResource;
 use App\Models\Document;
 use App\Models\File;
@@ -167,5 +168,12 @@ class UserController extends Controller
         $with_vals = array_filter(array_map('trim', explode(',', $load)));
         $documents = $user->favorites()->with($with_vals)->paginate(1000, ['*'], 'page', 1);
         return DocumentResource::collection($documents);
+    }
+
+    public function history_points(Request $request)
+    {
+        $user = $request->user();
+        $historyPoints = $user->historyPoints()->orderBy('created_at', 'desc')->paginate(1000, ['*'], 'page', 1);
+        return HistoryPointResource::collection($historyPoints);
     }
 }

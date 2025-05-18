@@ -19,7 +19,6 @@ class DocumentObserver
     {
         Log::debug("Observer: Document updated event fired", ['id' => $document->id, 'status' => $document->status]);
 
-        // Kiểm tra status đơn giản hơn, đảm bảo hoạt động với cả string và enum
         $status = is_object($document->status) ? $document->status->value : $document->status;
 
         if ($status === 'approved') {
@@ -27,6 +26,21 @@ class DocumentObserver
             $document->saveQuietly();
             Log::debug("Observer: Document published", ['id' => $document->id]);
         }
+
+        $author = $document->author;
+        $is_have_history_point = $author->historyPoints()->where('document_id', $document->id)->where('type', 'publish')->exists();
+        Log::info('is_have_history_point', ['is_have_history_point' => $is_have_history_point]);
+        if ($is_have_history_point) {
+            return;
+        }
+        $author->points += 100;
+        $author->save();
+        $author->historyPoints()->create([
+            'points' => 100,
+            'document_id' => $document->id,
+            'type' => 'publish',
+            'description' => 'Tài liệu ' . $document->title . ' được phê duyệt vào ' . now()->format('d/m/Y H:i:s')
+        ]);
     }
 
     /**

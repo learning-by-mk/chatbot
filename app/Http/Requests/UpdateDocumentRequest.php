@@ -39,8 +39,7 @@ class UpdateDocumentRequest extends FormRequest
             'file_id' => 'required|exists:files,id',
             'image_id' => 'required|exists:files,id',
             'content' => 'nullable|string',
-            'is_free' => 'nullable|boolean',
-            'price' => 'required_if:is_free,false|numeric|min:0',
+            'points' => 'required|numeric|min:0',
             'publisher_id' => 'nullable|exists:publishers,id',
         ];
     }

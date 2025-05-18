@@ -108,7 +108,16 @@ class User extends Authenticatable
     public function deposit(PointPackage $pointPackage)
     {
         $this->points += $pointPackage->points;
+        $this->historyPoints()->create([
+            'points' => $pointPackage->points,
+            'description' => 'Nạp điểm từ gói ' . $pointPackage->name . ' với giá ' . $pointPackage->price . ' VND'
+        ]);
         $this->save();
+    }
+
+    public function historyPoints(): HasMany
+    {
+        return $this->hasMany(HistoryPoint::class);
     }
 
     public function statistics()

@@ -42,6 +42,7 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('/users/documents/list', [UserController::class, 'documents'])->name('users.documents');
     Route::delete('/users/documents/{document}', [UserController::class, 'destroy_document'])->name('users.destroy_document');
     Route::get('/users/statistics/show', [UserController::class, 'statistics'])->name('users.statistics');
+    Route::get('/users/history_points/show', [UserController::class, 'history_points'])->name('users.history_points');
 
     Route::apiResource('/settings', SettingController::class)->names('settings');
     Route::apiResource('/setting-groups', SettingGroupController::class)->names('setting-groups');
