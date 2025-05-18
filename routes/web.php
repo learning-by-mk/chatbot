@@ -65,6 +65,8 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::post('/documents/{document}/ai-summary', [DocumentController::class, 'ai_summary'])->name('documents.ai_summary');
     Route::post('/documents/{document}/ai-voice', [DocumentController::class, 'ai_voice'])->name('documents.ai_voice');
     Route::get('/documents/{document}/chat', [DocumentController::class, 'chat'])->name('documents.chat');
+    Route::get('/documents/{document}/is_purchased', [DocumentController::class, 'is_purchased'])->name('documents.is_purchased');
+    Route::post('/documents/{document}/purchase', [DocumentController::class, 'purchase'])->name('documents.purchase');
 
     Route::apiResource('/files', FileController::class)->names('files');
     Route::apiResource('/views', ViewController::class)->names('views');
@@ -81,7 +83,6 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     // Route::get('inquiries/{inquiry}', [InquiryController::class, 'show']);
     Route::apiResource('/inquiries', InquiryController::class)->names('inquiries');
 
-    // Route cho admin
     Route::get('admin/inquiries', [InquiryController::class, 'index']);
     Route::post('inquiries/{inquiry}/respond', [InquiryController::class, 'respond']);
 
@@ -95,10 +96,12 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
     Route::get('publishers/{publisher}/documents', [PublisherController::class, 'documents']);
     Route::get('publishers/{publisher}/statistics', [PublisherController::class, 'statistics']);
 
-    // Routes cho AuthorProfile
     Route::apiResource('author-profiles', AuthorProfileController::class);
     Route::get('author-profiles/{authorProfile}/documents', [AuthorProfileController::class, 'documents']);
     Route::get('authors', [AuthorProfileController::class, 'getAuthors']);
+
+    Route::apiResource('/transactions', TransactionController::class)->names('transactions');
+    Route::apiResource('/document_purchases', DocumentPurchaseController::class)->names('document_purchases');
 });
 
 require __DIR__ . '/auth.php';

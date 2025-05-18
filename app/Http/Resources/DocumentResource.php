@@ -48,6 +48,11 @@ class DocumentResource extends JsonResource
             'file_id' => $this->file_id,
             'image' => $this->whenLoaded('image', fn() => [new FileResource($this->image)]),
             'image_id' => $this->image_id,
+            'publisher' => $this->whenLoaded('publisher', fn() => new PublisherResource($this->publisher)),
+            'price' => $this->whenLoaded('price', fn() => new DocumentPriceResource($this->price)),
+            'purchases' => $this->whenLoaded('purchases', fn() => DocumentPurchaseResource::collection($this->purchases), []),
+            'is_purchased' => $this->isPurchased($request->user()),
+            'is_free' => $this->isFree(),
         ];
     }
 }

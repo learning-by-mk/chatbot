@@ -31,6 +31,10 @@ class Document extends Model
         'file',
         'likes',
         'publisher',
+        'likes',
+        'price',
+        'purchases',
+        'is_free'
     ];
 
     protected function casts()
@@ -123,5 +127,26 @@ class Document extends Model
     public function topics(): BelongsToMany
     {
         return $this->belongsToMany(Topic::class, 'document_topics');
+    }
+    public function price(): HasOne
+    {
+        return $this->hasOne(DocumentPrice::class);
+    }
+
+    public function purchases(): HasMany
+    {
+        return $this->hasMany(DocumentPurchase::class);
+    }
+
+    public function isPurchased(User $user): bool
+    {
+        return $this->purchases()->where('user_id', $user->id)->exists();
+    }
+
+    public function isFree(): bool
+    {
+        /** @var DocumentPrice $price */
+        $price = $this->price;
+        return $price && $price->is_free;
     }
 }
