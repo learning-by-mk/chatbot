@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             DownloadSeeder::class,
             SettingGroupSeeder::class,
             SettingSeeder::class,
+            PublisherSeeder::class,
+            AuthorProfileSeeder::class,
         ]);
     }
 }
