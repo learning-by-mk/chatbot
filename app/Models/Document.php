@@ -30,6 +30,7 @@ class Document extends Model
         'uploaded_by',
         'file',
         'likes',
+        'publisher',
     ];
 
     protected function casts()
@@ -87,6 +88,11 @@ class Document extends Model
     public function uploaded_by(): BelongsTo
     {
         return $this->belongsTo(User::class, 'uploaded_by_id');
+    }
+
+    public function publisher(): BelongsTo
+    {
+        return $this->belongsTo(Publisher::class);
     }
 
     public function downloads(): HasMany

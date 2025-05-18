@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AuthorProfileController;
+use App\Http\Controllers\PublisherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 

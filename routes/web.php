@@ -24,6 +24,8 @@ use App\Http\Controllers\RatingController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\ViewController;
+use App\Http\Controllers\PublisherController;
+use App\Http\Controllers\AuthorProfileController;
 
 Route::middleware(['api', 'auth:sanctum'])->prefix('api/chats')->group(function () {
     Route::post('/', [ChatController::class, 'store'])->name('chat.store');
@@ -88,6 +90,15 @@ Route::middleware(['api', 'auth:sanctum'])->prefix('api')->group(function () {
 
     Route::get('/interaction/statistics', [InteractionController::class, 'get_interaction_statistics'])->name('interaction.statistics');
     Route::get('/interaction/data', [InteractionController::class, 'get_interaction_data'])->name('interaction.data');
+
+    Route::apiResource('publishers', PublisherController::class);
+    Route::get('publishers/{publisher}/documents', [PublisherController::class, 'documents']);
+    Route::get('publishers/{publisher}/statistics', [PublisherController::class, 'statistics']);
+
+    // Routes cho AuthorProfile
+    Route::apiResource('author-profiles', AuthorProfileController::class);
+    Route::get('author-profiles/{authorProfile}/documents', [AuthorProfileController::class, 'documents']);
+    Route::get('authors', [AuthorProfileController::class, 'getAuthors']);
 });
 
 require __DIR__ . '/auth.php';
